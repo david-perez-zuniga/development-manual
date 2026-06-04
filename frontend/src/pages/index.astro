@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Development Manual">
+  <main class="hero">
+    <h1>Development Manual</h1>
+    <p>Guía de estilo y convenciones para desarrollo backend con FastAPI</p>
+    <a href="/docs/01-stack-configuracion" class="cta">Ver documentación</a>
+  </main>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--color-muted);
+    margin-bottom: 2rem;
+    max-width: 600px;
+  }
+
+  .cta {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: var(--color-primary);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background 0.2s;
+  }
+
+  .cta:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+</style>

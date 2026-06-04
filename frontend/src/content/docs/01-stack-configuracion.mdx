@@ -1,0 +1,21 @@
+---
+title: "Stack Tecnológico y Configuración"
+description: "FastAPI, SQLAlchemy, Pydantic, PostgreSQL y configuración del proyecto"
+category: "stack"
+order: 1
+---
+
+## Stack Core
+
+- **Framework Web**: FastAPI con CORS habilitado
+- **ORM**: SQLAlchemy 2.0+ con soporte asíncrono
+- **Schemas/Validación**: Pydantic v2
+- **Configuración**: Pydantic Settings v2
+- **Base de Datos**: PostgreSQL (producción), SQLite en RAM (testing)
+- **Migraciones**: Alembic
+- **Testing**: pytest + pytest-asyncio + httpx.AsyncClient
+- **Autenticación**: JWT + bcrypt + OAuth2PasswordBearer
+
+## Configuración de la App
+
+Siempre define la app FastAPI con `title`, `description` y `version`. Incluye CORS y registra los routers con prefijo y tags.
