@@ -1,0 +1,47 @@
+---
+import '../styles/global.css';
+import TopNavbar from '../components/navigation/TopNavbar.astro';
+import Sidebar from '../components/navigation/Sidebar.astro';
+import type { NavItem } from '../utils/navigation';
+
+interface Props {
+  title?: string;
+  description?: string;
+  navItems?: NavItem[];
+  currentSlug?: string;
+}
+
+const { title = 'Development Manual', description, navItems = [], currentSlug } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+  </head>
+  <body>
+    <TopNavbar siteTitle="Development Manual" />
+    <div class="layout">
+      {navItems.length > 0 && <Sidebar items={navItems} currentSlug={currentSlug} />}
+      <main class="content">
+        <slot />
+      </main>
+    </div>
+  </body>
+</html>
+
+<style>
+  .layout {
+    display: flex;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 800px;
+  }
+</style>

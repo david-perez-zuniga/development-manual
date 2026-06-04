@@ -1,0 +1,37 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getNavigation } from '../../utils/navigation';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('fastapi-guide');
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const navItems = await getNavigation();
+const { Content } = await entry.render();
+---
+
+<BaseLayout
+  title={`${entry.data.title} - Development Manual`}
+  description={entry.data.description}
+  navItems={navItems}
+  currentSlug={entry.slug}
+>
+  <article class="guide">
+    <h1 class="guide__title">{entry.data.title}</h1>
+    <Content />
+  </article>
+</BaseLayout>
+
+<style>
+  .guide__title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+</style>

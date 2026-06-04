@@ -1,0 +1,39 @@
+---
+export interface Props {
+  siteTitle?: string;
+}
+
+const { siteTitle = 'Development Manual' } = Astro.props;
+---
+
+<nav class="navbar">
+  <div class="navbar__inner">
+    <a href="/" class="navbar__brand">{siteTitle}</a>
+  </div>
+</nav>
+
+<style>
+  .navbar {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0 1.5rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .navbar__inner {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+  }
+  .navbar__brand {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #fff;
+  }
+</style>

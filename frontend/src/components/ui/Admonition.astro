@@ -1,0 +1,44 @@
+---
+interface Props {
+  type?: 'note' | 'warning' | 'tip';
+  label?: string;
+}
+
+const { type = 'note', label } = Astro.props;
+---
+
+<div class={`admonition admonition--${type}`}>
+  <span class="admonition__label">{label || type}</span>
+  <slot />
+</div>
+
+<style>
+  .admonition {
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid;
+    margin-bottom: 1rem;
+  }
+  .admonition--note {
+    background: #e8f4fd;
+    border-color: #b3d7f7;
+    color: #1a5276;
+  }
+  .admonition--warning {
+    background: #fff3cd;
+    border-color: #ffca2c;
+    color: #856404;
+  }
+  .admonition--tip {
+    background: #d4edda;
+    border-color: #badbcc;
+    color: #155724;
+  }
+  .admonition__label {
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+</style>

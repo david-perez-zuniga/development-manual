@@ -1,0 +1,64 @@
+---
+import type { NavItem } from '../../utils/navigation';
+
+interface Props {
+  items: NavItem[];
+  currentSlug?: string;
+}
+
+const { items, currentSlug } = Astro.props;
+---
+
+<aside class="sidebar">
+  <nav>
+    <ul class="sidebar__list">
+      {items.map((item) => (
+        <li class="sidebar__item">
+          <a
+            href={`/fastapi-guide/${item.slug}`}
+            class:list={{
+              'sidebar__link': true,
+              'sidebar__link--active': item.slug === currentSlug,
+            }}
+          >
+            {item.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</aside>
+
+<style>
+  .sidebar {
+    width: 260px;
+    padding: 1.5rem;
+    border-right: 1px solid #e2e8f0;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    position: sticky;
+    top: 56px;
+  }
+  .sidebar__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .sidebar__link {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #475569;
+    transition: background 0.15s, color 0.15s;
+  }
+  .sidebar__link:hover {
+    background: #f1f5f9;
+    color: #1a1a2e;
+  }
+  .sidebar__link--active {
+    background: #1a1a2e;
+    color: #fff;
+    font-weight: 600;
+  }
+</style>
