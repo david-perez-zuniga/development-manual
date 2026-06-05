@@ -4,6 +4,7 @@ import ManualCard from '../components/ui/ManualCard.astro';
 import FeatureCard from '../components/ui/FeatureCard.astro';
 import ChecklistItem from '../components/ui/ChecklistItem.astro';
 import SectionFooter from '../components/ui/SectionFooter.astro';
+import TerminalWindow from '../components/ui/TerminalWindow.astro';
 ---
 
 <BaseLayout title="Manual de FastAPI">
@@ -37,9 +38,9 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
         description="Domina la creaci&oacute;n de APIs modernas, r&aacute;pidas y tipadas con Python."
         topics={[
           { label: "Introducci&oacute;n", href: "#backend-fastapi" },
-          { label: "Primeros Pasos", href: "#backend-fastapi" },
+          { label: "Instalaci&oacute;n", href: "#instalacion-fastapi" },
+          { label: "Primeros Pasos", href: "#primeros-pasos-fastapi" },
           { label: "Modelos Pydantic", href: "#backend-fastapi" },
-          { label: "Rutas y Operaciones", href: "#backend-fastapi" },
         ]}
       />
     </div>
@@ -73,7 +74,23 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
         description="Reduce los errores en un 40% aproximadamente mediante el uso de Type Hinting."
       />
     </div>
-    <div class="content-section__code">
+    <div class="content-section__instalacion" id="instalacion-fastapi">
+      <h3 class="content-section__section-title">
+        <span class="material-symbols-outlined content-section__section-icon">download</span>
+        Instalaci&oacute;n
+      </h3>
+      <TerminalWindow title="bash — installation">
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span class="typing-cursor" id="typing-cmd-1"></span>
+        </div>
+        <div class="terminal-line">
+          <span class="terminal-prompt">$</span>
+          <span id="typing-cmd-2"></span>
+        </div>
+      </TerminalWindow>
+    </div>
+    <div class="content-section__code" id="primeros-pasos-fastapi">
       <div class="content-section__code-header">
         <h3 class="content-section__code-title">
           <span class="material-symbols-outlined content-section__code-icon">code</span>
@@ -81,7 +98,7 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
         </h3>
         <span class="content-section__filename">main.py</span>
       </div>
-      <div class="code-block">
+      <TerminalWindow title="main.py">
         <pre class="code-block__pre"><code><span class="code-block__keyword">from</span> fastapi <span class="code-block__keyword">import</span> FastAPI
 
 <span class="code-block__variable">app</span> = FastAPI()
@@ -89,7 +106,7 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
 <span class="code-block__decorator">@app.get</span>(<span class="code-block__string">"/"</span>)
 <span class="code-block__keyword">async def</span> <span class="code-block__function">read_root</span>():
     <span class="code-block__keyword">return</span> {'{'}<span class="code-block__string">"message"</span>: <span class="code-block__string">"&iexcl;Hola Mundo!"</span>{'}'}</code></pre>
-      </div>
+      </TerminalWindow>
     </div>
     <div class="content-section__guide">
       <h3 class="content-section__guide-title">Gu&iacute;a de Estilo</h3>
@@ -327,6 +344,55 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
     }
   }
 
+  .content-section__instalacion {
+    margin-bottom: 6rem;
+  }
+
+  .content-section__section-title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--on-surface);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .content-section__section-icon {
+    color: var(--primary);
+  }
+
+  .terminal-line {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    min-height: 1.5em;
+  }
+
+  .terminal-prompt {
+    color: var(--primary);
+    opacity: 0.7;
+    flex-shrink: 0;
+  }
+
+  .typing-cursor::after {
+    content: '|';
+    animation: blink 1s infinite;
+    color: #6ee591;
+    margin-left: 2px;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .content-section__code {
+    margin-bottom: 6rem;
+  }
+
   .content-section__code-header {
     display: flex;
     align-items: center;
@@ -449,12 +515,54 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
 </style>
 
 <script>
+  // Typing Animation
+  const commands = [
+    { id: 'typing-cmd-1', text: 'pip install fastapi' },
+    { id: 'typing-cmd-2', text: 'pip install "uvicorn[standard]"' },
+  ];
+
+  async function typeWriter(elementId: string, text: string, speed = 80) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
+    element.classList.add('typing-cursor');
+    element.textContent = '';
+    for (let i = 0; i < text.length; i++) {
+      element.textContent += text.charAt(i);
+      await new Promise((resolve) => setTimeout(resolve, speed));
+    }
+    element.classList.remove('typing-cursor');
+  }
+
+  async function startTypingSequence() {
+    for (const cmd of commands) {
+      await typeWriter(cmd.id, cmd.text);
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    }
+  }
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          startTypingSequence();
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.5 }
+  );
+
+  const terminalSection = document.getElementById('instalacion-fastapi');
+  if (terminalSection) observer.observe(terminalSection);
+
+  // Atmospheric hover effects
   window.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth) * 100;
     const y = (e.clientY / window.innerHeight) * 100;
     document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0f172a 0%, #0b1326 100%)`;
   });
 
+  // Smooth scrolling
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (e) => {
       const href = anchor.getAttribute('href');
@@ -464,7 +572,7 @@ import SectionFooter from '../components/ui/SectionFooter.astro';
       if (targetElement) {
         e.preventDefault();
         window.scrollTo({
-          top: targetElement.offsetTop,
+          top: targetElement.offsetTop - 80,
           behavior: 'smooth',
         });
       }
