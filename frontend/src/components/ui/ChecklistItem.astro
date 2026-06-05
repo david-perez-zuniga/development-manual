@@ -1,0 +1,49 @@
+---
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<li class="checklist-item">
+  <span class="material-symbols-outlined checklist-item__icon">check_circle</span>
+  <div>
+    <strong class="checklist-item__title">{title}</strong>
+    <p class="checklist-item__description">{description}</p>
+  </div>
+</li>
+
+<style>
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-xl);
+    transition: background-color 0.2s;
+    list-style: none;
+  }
+
+  .checklist-item:hover {
+    background-color: rgba(23, 31, 51, 0.5);
+  }
+
+  .checklist-item__icon {
+    color: var(--primary);
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .checklist-item__title {
+    color: var(--on-surface);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .checklist-item__description {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+  }
+</style>
