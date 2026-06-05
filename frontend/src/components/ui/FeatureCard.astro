@@ -3,13 +3,19 @@ interface Props {
   title: string;
   description: string;
   icon?: string;
+  variant?: 'default' | 'glass';
+  iconColor?: 'primary' | 'secondary';
 }
 
-const { title, description, icon } = Astro.props;
+const { title, description, icon, variant = 'default', iconColor = 'primary' } = Astro.props;
 ---
 
-<div class="feature-card">
-  {icon && <span class="feature-card__icon">{icon}</span>}
+<div class:list={['feature-card', `feature-card--${variant}`]}>
+  {icon && (
+    <div class:list={['feature-card__icon-box', `feature-card__icon-box--${iconColor}`]}>
+      <span class="material-symbols-outlined feature-card__icon">{icon}</span>
+    </div>
+  )}
   <h3 class="feature-card__title">{title}</h3>
   <p class="feature-card__description">{description}</p>
 </div>
@@ -25,7 +31,24 @@ const { title, description, icon } = Astro.props;
   .feature-card:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
-  .feature-card__icon {
+  .feature-card__icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  .feature-card__icon-box--primary {
+    background: rgba(110, 229, 145, 0.1);
+    color: var(--primary);
+  }
+  .feature-card__icon-box--secondary {
+    background: rgba(164, 201, 255, 0.1);
+    color: var(--secondary);
+  }
+  .feature-card__icon--default {
     font-size: 2rem;
     display: block;
     margin-bottom: 0.75rem;
@@ -38,5 +61,32 @@ const { title, description, icon } = Astro.props;
   .feature-card__description {
     color: #64748b;
     font-size: 0.9rem;
+  }
+
+  .feature-card--glass {
+    background: rgba(34, 42, 61, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .feature-card--glass:hover {
+    background: rgba(45, 52, 73, 0.6);
+    border-color: rgba(110, 229, 141, 0.3);
+    box-shadow: none;
+  }
+  .feature-card--glass .feature-card__title {
+    color: var(--on-surface);
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+    margin-bottom: 0;
+  }
+  .feature-card--glass .feature-card__description {
+    color: var(--on-surface-variant);
+    font-size: 14px;
   }
 </style>
