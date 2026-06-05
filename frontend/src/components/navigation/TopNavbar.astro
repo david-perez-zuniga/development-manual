@@ -3,37 +3,49 @@ export interface Props {
   siteTitle?: string;
 }
 
-const { siteTitle = 'Development Manual' } = Astro.props;
+const { siteTitle = 'FastAPI Manual' } = Astro.props;
 ---
 
-<nav class="navbar">
-  <div class="navbar__inner">
-    <a href="/" class="navbar__brand">{siteTitle}</a>
+<nav class="topnavbar" role="navigation" aria-label="Navegación principal">
+  <div class="topnavbar__inner">
+    <span class="topnavbar__brand" id="topnavbar-brand">{siteTitle}</span>
   </div>
 </nav>
 
 <style>
-  .navbar {
-    background: #1a1a2e;
-    color: #fff;
-    padding: 0 1.5rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    position: sticky;
+  .topnavbar {
+    position: fixed;
     top: 0;
-    z-index: 100;
-  }
-  .navbar__inner {
-    max-width: 1200px;
     width: 100%;
-    margin: 0 auto;
+    z-index: 50;
+    background: rgba(11, 19, 38, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 var(--margin-desktop);
+    height: 64px;
+  }
+
+  .topnavbar__inner {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
   }
-  .navbar__brand {
+
+  .topnavbar__brand {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
     font-weight: 700;
-    font-size: 1.1rem;
-    color: #fff;
+    color: var(--primary);
+    cursor: pointer;
   }
 </style>
+
+<script>
+  document.getElementById('topnavbar-brand')?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
