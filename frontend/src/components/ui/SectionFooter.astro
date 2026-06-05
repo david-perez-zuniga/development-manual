@@ -1,0 +1,53 @@
+---
+interface Props {
+  message?: string;
+}
+
+const { message = 'Has llegado al final del manual de FastAPI.' } = Astro.props;
+---
+
+<div class="section-footer">
+  <p class="section-footer__message">{message}</p>
+  <button class="section-footer__button" id="section-footer-top">
+    <span class="material-symbols-outlined">arrow_upward</span>
+    Volver al Inicio
+  </button>
+</div>
+
+<style>
+  .section-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 3rem;
+    padding-bottom: 6rem;
+    text-align: center;
+  }
+
+  .section-footer__message {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+    margin-bottom: 1rem;
+  }
+
+  .section-footer__button {
+    background: none;
+    border: none;
+    color: var(--primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 0;
+  }
+
+  .section-footer__button:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<script>
+  document.getElementById('section-footer-top')?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+</script>
