@@ -11,25 +11,41 @@ interface Props {
   currentSlug?: string;
 }
 
-const { title = 'Development Manual', description, navItems = [], currentSlug } = Astro.props;
+const { title, description, navItems = [], currentSlug } = Astro.props;
+
+const hasSidebar = navItems.length > 0;
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html class="dark" lang="es">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <title>{title ?? 'Development Manual'}</title>
     {description && <meta name="description" content={description} />}
   </head>
   <body>
     <TopNavbar siteTitle="Development Manual" />
-    <div class="layout">
-      {navItems.length > 0 && <Sidebar items={navItems} currentSlug={currentSlug} />}
-      <main class="content">
+    {hasSidebar ? (
+      <div class="layout">
+        <Sidebar items={navItems} currentSlug={currentSlug} />
+        <main class="content">
+          <slot />
+        </main>
+      </div>
+    ) : (
+      <main>
         <slot />
       </main>
-    </div>
+    )}
   </body>
 </html>
 
