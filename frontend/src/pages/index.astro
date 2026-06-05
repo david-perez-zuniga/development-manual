@@ -1,36 +1,473 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ManualCard from '../components/ui/ManualCard.astro';
 import FeatureCard from '../components/ui/FeatureCard.astro';
+import ChecklistItem from '../components/ui/ChecklistItem.astro';
+import SectionFooter from '../components/ui/SectionFooter.astro';
 ---
 
-<BaseLayout title="Development Manual - Inicio">
+<BaseLayout title="Manual de FastAPI">
   <section class="hero">
-    <h1 class="hero__title">Development Manual</h1>
-    <p class="hero__description">Guía de desarrollo y buenas prácticas.</p>
+    <div class="hero__ambient">
+      <div class="hero__glow hero__glow--primary"></div>
+      <div class="hero__glow hero__glow--secondary"></div>
+    </div>
+    <div class="hero__brand">
+      <div class="hero__icon">
+        <span class="material-symbols-outlined hero__terminal" style="font-variation-settings: 'FILL' 1;">terminal</span>
+        <div class="hero__badge">
+          <span class="material-symbols-outlined hero__bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+        </div>
+      </div>
+    </div>
+    <h1 class="hero__title">Manual de FastAPI</h1>
+    <div class="hero__actions">
+      <a class="hero__cta" href="#manuals-section">
+        Explorar Módulos
+        <span class="material-symbols-outlined hero__arrow">arrow_forward</span>
+      </a>
+    </div>
   </section>
+  <section class="manuals" id="manuals-section">
+    <h2 class="manuals__heading">Manuales</h2>
+    <div class="manuals__list">
+      <ManualCard
+        number="01"
+        title="FastAPI"
+        description="Domina la creaci&oacute;n de APIs modernas, r&aacute;pidas y tipadas con Python."
+        topics={[
+          { label: "Introducci&oacute;n", href: "#backend-fastapi" },
+          { label: "Primeros Pasos", href: "#backend-fastapi" },
+          { label: "Modelos Pydantic", href: "#backend-fastapi" },
+          { label: "Rutas y Operaciones", href: "#backend-fastapi" },
+        ]}
+      />
+    </div>
+  </section>
+  <section class="content-section" id="backend-fastapi">
+    <header class="content-section__header">
+      <div class="content-section__breadcrumb">
+        <span>01</span>
+        <span class="material-symbols-outlined content-section__chevron">chevron_right</span>
+        <span>FastAPI</span>
+      </div>
+      <h2 class="content-section__title">FastAPI</h2>
+      <p class="content-section__description">
+        FastAPI es un framework web moderno, r&aacute;pido (de alto rendimiento) para construir APIs con Python 3.7+
+        basado en las anotaciones de tipos est&aacute;ndar de Python.
+      </p>
+    </header>
+    <div class="content-section__features">
+      <FeatureCard
+        variant="glass"
+        iconColor="primary"
+        icon="bolt"
+        title="Alto Rendimiento"
+        description="Rendimiento muy alto, a la par con NodeJS y Go gracias a Starlette y Pydantic."
+      />
+      <FeatureCard
+        variant="glass"
+        iconColor="secondary"
+        icon="verified_user"
+        title="Tipado Fuerte"
+        description="Reduce los errores en un 40% aproximadamente mediante el uso de Type Hinting."
+      />
+    </div>
+    <div class="content-section__code">
+      <div class="content-section__code-header">
+        <h3 class="content-section__code-title">
+          <span class="material-symbols-outlined content-section__code-icon">code</span>
+          Primeros Pasos
+        </h3>
+        <span class="content-section__filename">main.py</span>
+      </div>
+      <div class="code-block">
+        <pre class="code-block__pre"><code><span class="code-block__keyword">from</span> fastapi <span class="code-block__keyword">import</span> FastAPI
 
-  <section class="features">
-    <FeatureCard title="FastAPI" description="Guía completa para backend con FastAPI." />
+<span class="code-block__variable">app</span> = FastAPI()
+
+<span class="code-block__decorator">@app.get</span>(<span class="code-block__string">"/"</span>)
+<span class="code-block__keyword">async def</span> <span class="code-block__function">read_root</span>():
+    <span class="code-block__keyword">return</span> {'{'}<span class="code-block__string">"message"</span>: <span class="code-block__string">"&iexcl;Hola Mundo!"</span>{'}'}</code></pre>
+      </div>
+    </div>
+    <div class="content-section__guide">
+      <h3 class="content-section__guide-title">Gu&iacute;a de Estilo</h3>
+      <div class="admonition admonition--tip">
+        <div class="admonition__header">
+          <span class="material-symbols-outlined admonition__icon">lightbulb</span>
+          <span class="admonition__label">Recomendaci&oacute;n</span>
+        </div>
+        <p class="admonition__text">
+          Utiliza siempre entornos virtuales (venv o poetry) para gestionar dependencias.
+        </p>
+      </div>
+      <ul class="content-section__checklist">
+        <ChecklistItem
+          title="Type Hinting"
+          description="Permite que FastAPI realice validaci&oacute;n de datos autom&aacute;tica."
+        />
+      </ul>
+    </div>
+    <SectionFooter />
   </section>
 </BaseLayout>
 
 <style>
   .hero {
+    position: relative;
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 1.5rem;
     text-align: center;
-    padding: 4rem 0;
+    overflow: hidden;
   }
+
+  .hero__ambient {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    opacity: 0.2;
+  }
+
+  .hero__glow {
+    position: absolute;
+    width: 24rem;
+    height: 24rem;
+    border-radius: 50%;
+    filter: blur(120px);
+  }
+
+  .hero__glow--primary {
+    top: 0;
+    left: 25%;
+    background-color: var(--primary);
+  }
+
+  .hero__glow--secondary {
+    bottom: 0;
+    right: 25%;
+    background-color: var(--secondary);
+  }
+
+  .hero__brand {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .hero__icon {
+    width: 80px;
+    height: 80px;
+    background-color: var(--surface-container-high);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+
+  .hero__terminal {
+    font-size: 2.25rem;
+    color: var(--primary);
+  }
+
+  .hero__badge {
+    position: absolute;
+    bottom: -4px;
+    right: -4px;
+    width: 24px;
+    height: 24px;
+    background-color: var(--secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--surface);
+  }
+
+  .hero__bolt {
+    font-size: 0.75rem;
+    color: var(--on-secondary-container);
+  }
+
   .hero__title {
-    font-size: 2.5rem;
-    font-weight: 800;
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 48px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: var(--primary);
     margin-bottom: 1rem;
+    max-width: 48rem;
   }
-  .hero__description {
-    color: #64748b;
-    font-size: 1.2rem;
-  }
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+
+  .hero__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 1rem;
   }
+
+  @media (min-width: 640px) {
+    .hero__actions {
+      flex-direction: row;
+    }
+  }
+
+  .hero__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: var(--primary);
+    color: var(--on-primary);
+    font-weight: 500;
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+    box-shadow: 0 10px 15px -3px rgba(110, 229, 145, 0.2), 0 4px 6px -4px rgba(110, 229, 145, 0.2);
+    cursor: pointer;
+  }
+
+  .hero__cta:hover {
+    background-color: rgba(110, 229, 145, 0.9);
+  }
+
+  .hero__arrow {
+    transition: transform 0.2s;
+  }
+
+  .hero__cta:hover .hero__arrow {
+    transform: translateX(4px);
+  }
+
+  .manuals {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 6rem var(--margin-desktop);
+  }
+
+  .manuals__heading {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 32px;
+    line-height: 1.25;
+    font-weight: 600;
+    color: var(--primary);
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .manuals__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .content-section {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 6rem var(--margin-desktop);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .content-section__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--primary);
+    margin-bottom: 1rem;
+  }
+
+  .content-section__chevron {
+    font-size: 14px;
+  }
+
+  .content-section__title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 48px;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    font-weight: 700;
+    color: var(--on-surface);
+    margin-bottom: 1.5rem;
+  }
+
+  .content-section__description {
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    line-height: 1.7;
+    font-weight: 400;
+    color: var(--on-surface-variant);
+  }
+
+  .content-section__features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+    margin-top: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .content-section__features {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  .content-section__code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  .content-section__code-title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--on-surface);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .content-section__code-icon {
+    color: var(--primary);
+  }
+
+  .content-section__filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.2;
+    font-weight: 500;
+    color: var(--on-surface-variant);
+    background-color: var(--surface-container-high);
+    padding: 0.25rem 0.5rem;
+    border-radius: var(--radius-default);
+  }
+
+  .code-block {
+    background-color: var(--surface-container-low);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    margin-bottom: 3rem;
+  }
+
+  .code-block__pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 400;
+    padding: 1.5rem;
+    overflow-x: auto;
+    color: #cbd5e1;
+  }
+
+  .code-block__keyword {
+    color: var(--primary-container);
+  }
+
+  .code-block__variable {
+    color: var(--on-background);
+  }
+
+  .code-block__decorator {
+    color: var(--secondary);
+  }
+
+  .code-block__string {
+    color: var(--tertiary-container);
+  }
+
+  .code-block__function {
+    color: var(--secondary);
+  }
+
+  .content-section__guide-title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 24px;
+    line-height: 1.4;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin-bottom: 1.5rem;
+  }
+
+  .admonition--tip {
+    border-left: 4px solid var(--primary);
+    background: rgba(110, 229, 145, 0.05);
+    padding: 1.5rem;
+    border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+    margin-bottom: 1.5rem;
+  }
+
+  .admonition__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+  }
+
+  .admonition__icon {
+    font-size: 1.5rem;
+  }
+
+  .admonition__label {
+    font-weight: 700;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .admonition__text {
+    color: var(--on-surface-variant);
+    font-size: 14px;
+  }
+
+  .content-section__checklist {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    list-style: none;
+    padding: 0;
+  }
 </style>
+
+<script>
+  window.addEventListener('mousemove', (e) => {
+    const x = (e.clientX / window.innerWidth) * 100;
+    const y = (e.clientY / window.innerHeight) * 100;
+    document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0f172a 0%, #0b1326 100%)`;
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        window.scrollTo({
+          top: targetElement.offsetTop,
+          behavior: 'smooth',
+        });
+      }
+    });
+  });
+</script>
