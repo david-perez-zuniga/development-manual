@@ -10,9 +10,10 @@ interface Props {
   navItems?: NavItem[];
   currentSlug?: string;
   showBack?: boolean;
+  favicon?: string;
 }
 
-const { title, description, navItems = [], currentSlug, showBack = false } = Astro.props;
+const { title, description, navItems = [], currentSlug, showBack = false, favicon } = Astro.props;
 
 const hasSidebar = navItems.length > 0;
 ---
@@ -30,6 +31,7 @@ const hasSidebar = navItems.length > 0;
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
       rel="stylesheet"
     />
+    <link rel="icon" href={favicon ?? '/favicon.svg'} type="image/svg+xml" />
     <title>{title ?? 'Development Manual'}</title>
     {description && <meta name="description" content={description} />}
   </head>
