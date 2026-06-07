@@ -1,41 +1,27 @@
 ---
-interface Topic {
-  label: string;
-  href: string;
-}
-
 interface Props {
   number: string;
   title: string;
   description: string;
-  topics: Topic[];
+  href?: string;
 }
 
-const { number, title, description, topics } = Astro.props;
-const cardId = `manual-card-${number}`;
-const topicsId = `manual-topics-${number}`;
+const { number, title, description, href = '/' } = Astro.props;
 ---
 
 <div class="glass-card manual-card">
-  <div class="manual-card__header" id={cardId} role="button" tabindex="0" aria-expanded="false" aria-controls={topicsId}>
-    <span class="manual-card__number">{number}</span>
-    <div class="manual-card__body">
-      <h3 class="manual-card__title">{title}</h3>
-      <p class="manual-card__description">{description}</p>
+  <a class="manual-card__link" href={href}>
+    <div class="manual-card__header">
+      <span class="manual-card__number">{number}</span>
+      <div class="manual-card__body">
+        <h3 class="manual-card__title">{title}</h3>
+        <p class="manual-card__description">{description}</p>
+      </div>
+      <div class="manual-card__action">
+        <span class="material-symbols-outlined manual-card__chevron">chevron_right</span>
+      </div>
     </div>
-    <div class="manual-card__action">
-      <span class="manual-card__label">Ver temas</span>
-      <span class="material-symbols-outlined manual-card__chevron">chevron_right</span>
-    </div>
-  </div>
-  <div class="manual-card__topics hidden" id={topicsId} role="region" aria-labelledby={cardId}>
-    {topics.map((topic) => (
-      <a class="manual-card__topic" href={topic.href}>
-        <span class="manual-card__bullet"></span>
-        {topic.label}
-      </a>
-    ))}
-  </div>
+  </a>
 </div>
 
 <style>
@@ -45,13 +31,23 @@ const topicsId = `manual-topics-${number}`;
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .manual-card:hover {
+    border-color: rgba(110, 229, 145, 0.3);
+  }
+
+  .manual-card__link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
   }
 
   .manual-card__header {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    cursor: pointer;
   }
 
   .manual-card__number {
@@ -79,6 +75,11 @@ const topicsId = `manual-topics-${number}`;
     line-height: 1.4;
     font-weight: 600;
     color: var(--on-surface);
+    transition: color 0.2s;
+  }
+
+  .manual-card:hover .manual-card__title {
+    color: var(--primary);
   }
 
   .manual-card__description {
@@ -90,21 +91,7 @@ const topicsId = `manual-topics-${number}`;
   .manual-card__action {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     color: var(--primary);
-  }
-
-  .manual-card__label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.2;
-    font-weight: 500;
-    opacity: 0;
-    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .manual-card:hover .manual-card__label {
-    opacity: 1;
   }
 
   .manual-card__chevron {
@@ -114,68 +101,6 @@ const topicsId = `manual-topics-${number}`;
   .manual-card:hover .manual-card__chevron {
     transform: translateX(4px);
   }
-
-  .manual-card__topics {
-    display: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1rem;
-    gap: 0.5rem;
-  }
-
-  .manual-card__topics:not(.hidden) {
-    display: grid;
-    grid-template-columns: 1fr;
-  }
-
-  @media (min-width: 640px) {
-    .manual-card__topics:not(.hidden) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .manual-card__topic {
-    font-size: 14px;
-    color: var(--on-surface-variant);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: color 0.2s;
-  }
-
-  .manual-card__topic:hover {
-    color: var(--primary);
-  }
-
-  .manual-card__bullet {
-    width: 4px;
-    height: 4px;
-    background-color: var(--primary);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .hidden {
-    display: none !important;
-  }
 </style>
 
-<script>
-  const header = document.getElementById('{cardId}');
-  const topics = document.getElementById('{topicsId}');
 
-  function toggleTopics() {
-    if (!header || !topics) return;
-    const isHidden = topics.classList.contains('hidden');
-    topics.classList.toggle('hidden');
-    header.setAttribute('aria-expanded', String(!isHidden));
-  }
-
-  header?.addEventListener('click', toggleTopics);
-  header?.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleTopics();
-    }
-  });
-</script>
