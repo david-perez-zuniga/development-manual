@@ -9,9 +9,10 @@ interface Props {
   description?: string;
   navItems?: NavItem[];
   currentSlug?: string;
+  showBack?: boolean;
 }
 
-const { title, description, navItems = [], currentSlug } = Astro.props;
+const { title, description, navItems = [], currentSlug, showBack = false } = Astro.props;
 
 const hasSidebar = navItems.length > 0;
 ---
@@ -33,7 +34,7 @@ const hasSidebar = navItems.length > 0;
     {description && <meta name="description" content={description} />}
   </head>
   <body>
-    <TopNavbar siteTitle="Development Manual" />
+    <TopNavbar siteTitle="Development Manual" showBack={showBack} />
     {hasSidebar ? (
       <div class="layout">
         <Sidebar items={navItems} currentSlug={currentSlug} />
