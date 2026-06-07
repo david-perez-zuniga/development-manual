@@ -78,7 +78,8 @@
               "lang": "text",
               "code": "Routes  → Endpoints HTTP, orquestan la petición\nSchemas → Validación de datos de entrada/salida\nModels  → Definición de tablas y relaciones en BD\nCore    → Configuración global, seguridad, storage",
               "context": "Arquitectura por Capas (N-Layer) — Nuestra elección",
-              "description": "Es la que usamos en este proyecto. Simple, pragmática y suficiente para APIs CRUD."
+              "description": "Es la que usamos en este proyecto. Simple, pragmática y suficiente para APIs CRUD.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -122,7 +123,8 @@
               "lang": "text",
               "code": "Cliente → HTTP Request → Router (rt_*) → Schema (validación)\n    → Dependencia get_db (inyecta sesión)\n    → Lógica de negocio (CRUD)\n    → Modelo SQLAlchemy (consulta)\n    → Schema Read (serializa respuesta)\n    → HTTP Response → Cliente",
               "context": "Flujo de una petición",
-              "description": ""
+              "description": "",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -144,7 +146,8 @@
               "lang": "python",
               "code": "from sqlalchemy.orm import DeclarativeBase\n\n\nclass Base(DeclarativeBase):\n    pass",
               "context": "Crear la base de modelos",
-              "description": "Todos los modelos SQLAlchemy heredan de una misma clase `Base`. Se define usando `DeclarativeBase` (nueva API de SQLAlchemy 2.0):"
+              "description": "Todos los modelos SQLAlchemy heredan de una misma clase `Base`. Se define usando `DeclarativeBase` (nueva API de SQLAlchemy 2.0):",
+              "filename": "app/models/base.py"
             }
           ]
         },
@@ -166,7 +169,8 @@
               "lang": "python",
               "code": "from pydantic import BaseModel, ConfigDict\nfrom datetime import datetime\n\n\nclass BaseSchema(BaseModel):\n    model_config = ConfigDict(from_attributes=True, str_strip_whitespace=True)",
               "context": "Schema base para todas las entidades",
-              "description": "Todas las schemas heredan de `BaseSchema`. Se define en `app/schemas/__init__.py`:"
+              "description": "Todas las schemas heredan de `BaseSchema`. Se define en `app/schemas/__init__.py`:",
+              "filename": "app/schemas/__init__.py"
             },
             {
               "id": "01-project-architecture-4",
@@ -174,7 +178,8 @@
               "lang": "python",
               "code": "from . import BaseSchema",
               "context": "Schema base para todas las entidades",
-              "description": "Cada schema module importa `BaseSchema` desde el paquete:"
+              "description": "Cada schema module importa `BaseSchema` desde el paquete:",
+              "filename": "app/schemas/__init__.py"
             }
           ]
         }
@@ -218,7 +223,8 @@
               "lang": "bash",
               "code": "# Crear entorno virtual\npython3 -m venv venv\n\n# Activar\nsource venv/bin/activate      # Linux/macOS\n# venv\\Scripts\\activate       # Windows\n\n# Verificar que se activó\nwhich python\n# Debe apuntar a ./venv/bin/python",
               "context": "",
-              "description": "Usa siempre entornos virtuales para aislar dependencias:"
+              "description": "Usa siempre entornos virtuales para aislar dependencias:",
+              "filename": "terminal"
             }
           ]
         },
@@ -240,7 +246,8 @@
               "lang": "bash",
               "code": "pip install fastapi\npip install \"uvicorn[standard]\"",
               "context": "Instalación básica (FastAPI + servidor)",
-              "description": "`uvicorn` es el servidor ASGI que ejecuta FastAPI. El extra `[standard]` incluye características útiles como recarga automática en desarrollo (`--reload`). Sin uvicorn, FastAPI no puede servir HTTP."
+              "description": "`uvicorn` es el servidor ASGI que ejecuta FastAPI. El extra `[standard]` incluye características útiles como recarga automática en desarrollo (`--reload`). Sin uvicorn, FastAPI no puede servir HTTP.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-2",
@@ -248,7 +255,8 @@
               "lang": "bash",
               "code": "pip install fastapi uvicorn[standard] sqlalchemy psycopg2-binary alembic",
               "context": "Stack completo con PostgreSQL (síncrono)",
-              "description": "`sqlalchemy` es el ORM. `psycopg2-binary` es el driver de PostgreSQL. `alembic` gestiona migraciones de esquema. Ideal para APIs CRUD tradicionales."
+              "description": "`sqlalchemy` es el ORM. `psycopg2-binary` es el driver de PostgreSQL. `alembic` gestiona migraciones de esquema. Ideal para APIs CRUD tradicionales.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-3",
@@ -256,7 +264,8 @@
               "lang": "bash",
               "code": "pip install fastapi uvicorn[standard] sqlalchemy[asyncio] asyncpg aiosqlite alembic",
               "context": "Stack asíncrono con PostgreSQL",
-              "description": "`sqlalchemy[asyncio]` añade soporte async al ORM. `asyncpg` es el driver async de PostgreSQL (~2x más rápido que psycopg2). `aiosqlite` es útil para desarrollo local con SQLite async."
+              "description": "`sqlalchemy[asyncio]` añade soporte async al ORM. `asyncpg` es el driver async de PostgreSQL (~2x más rápido que psycopg2). `aiosqlite` es útil para desarrollo local con SQLite async.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-4",
@@ -264,7 +273,8 @@
               "lang": "bash",
               "code": "pip install pydantic-settings",
               "context": "Pydantic Settings (variables de entorno)",
-              "description": "Permite cargar .env y definir variables de entorno con tipado y validación Pydantic. Reemplaza a `python-dotenv` con mejor integración de tipos."
+              "description": "Permite cargar .env y definir variables de entorno con tipado y validación Pydantic. Reemplaza a `python-dotenv` con mejor integración de tipos.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-5",
@@ -272,7 +282,8 @@
               "lang": "bash",
               "code": "pip install python-jose[cryptography] bcrypt",
               "context": "Autenticación",
-              "description": "`python-jose` genera y verifica JWT. `[cryptography]` añade algoritmos seguros. `bcrypt` hashea contraseñas. Sin estos, no puedes implementar auth segura."
+              "description": "`python-jose` genera y verifica JWT. `[cryptography]` añade algoritmos seguros. `bcrypt` hashea contraseñas. Sin estos, no puedes implementar auth segura.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-6",
@@ -280,7 +291,8 @@
               "lang": "bash",
               "code": "pip install pytest pytest-asyncio httpx",
               "context": "Testing",
-              "description": "`pytest-asyncio` permite testear corrutinas async. `httpx` es el cliente HTTP que usa el `TestClient` de FastAPI para simular peticiones sin servidor real."
+              "description": "`pytest-asyncio` permite testear corrutinas async. `httpx` es el cliente HTTP que usa el `TestClient` de FastAPI para simular peticiones sin servidor real.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-7",
@@ -288,7 +300,8 @@
               "lang": "bash",
               "code": "pip install boto3",
               "context": "Cliente S3 (para almacenamiento de archivos)",
-              "description": "AWS SDK para subir archivos a S3 o compatibles (MinIO, DigitalOcean Spaces). Lo necesitas si tu app maneja uploads de imágenes o documentos."
+              "description": "AWS SDK para subir archivos a S3 o compatibles (MinIO, DigitalOcean Spaces). Lo necesitas si tu app maneja uploads de imágenes o documentos.",
+              "filename": "terminal"
             },
             {
               "id": "02-dependency-installation-8",
@@ -296,7 +309,8 @@
               "lang": "bash",
               "code": "pip freeze > requirements.txt",
               "context": "Guardar dependencias",
-              "description": "Congela las versiones exactas instaladas en el entorno. Esto permite reproducir el mismo entorno en producción o en otras máquinas."
+              "description": "Congela las versiones exactas instaladas en el entorno. Esto permite reproducir el mismo entorno en producción o en otras máquinas.",
+              "filename": "requirements.txt"
             }
           ]
         }
@@ -340,7 +354,8 @@
               "lang": "env",
               "code": "APP_NAME=\"Mi API\"\nADMIN_EMAIL=\"admin@miapi.com\"\nDATABASE_URL=\"postgresql+asyncpg://user:pass@localhost:5432/miapi\"\nDATABASE_RAM_URL=\"sqlite+aiosqlite://\"\nSECRET_KEY=\"supersecretkey123\"\nALGORITHM=\"HS256\"\nACCESS_TOKEN_EXPIRE_MINUTES=30",
               "context": "",
-              "description": "Crear `.env` en la raíz del proyecto:"
+              "description": "Crear `.env` en la raíz del proyecto:",
+              "filename": ".env"
             }
           ]
         },
@@ -362,7 +377,8 @@
               "lang": "text",
               "code": "FastAPI             → API REST con tipado y validación automática\nSQLAlchemy 2.0+     → ORM asíncrono con Mapped[] y mapped_column()\nPydantic v2         → Validación de datos con BaseModel\nPydantic Settings   → Variables de entorno tipadas con BaseSettings\nPostgreSQL / SQLite → Motor de BD en prod / tests\nAlembic             → Migraciones del esquema\npytest + httpx      → Tests unitarios y de integración\nJWT + bcrypt        → Autenticación segura",
               "context": "Componentes del Stack",
-              "description": ""
+              "description": "",
+              "filename": "app/core/config.py"
             }
           ]
         },
@@ -384,7 +400,8 @@
               "lang": "python",
               "code": "from fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom app.api.routes import rt_product, rt_user, rt_distributor, rt_order, rt_order_item, auth, inventory, reports\nfrom app.core.config import settings\n\napp = FastAPI(\n    title=settings.app_name,\n    description=\"API - Descripción del proyecto\",\n    version=\"1.0.0\"\n)\n\n# Habilitar CORS para desarrollo\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n# Registrar routers con prefix y tags\napp.include_router(rt_product.router, prefix=\"/router/rt_products\", tags=[\"products\"])\napp.include_router(rt_user.router, prefix=\"/router/rt_users\", tags=[\"users\"])\napp.include_router(rt_distributor.router, prefix=\"/router/rt_distributors\", tags=[\"distributors\"])\napp.include_router(rt_order.router, prefix=\"/router/rt_orders\", tags=[\"orders\"])\napp.include_router(rt_order_item.router, prefix=\"/router/rt_order_items\", tags=[\"order_items\"])\napp.include_router(auth.router, prefix=\"/api\", tags=[\"auth\"])\napp.include_router(inventory.router, prefix=\"/api\")\napp.include_router(reports.router, prefix=\"/api\")",
               "context": "Crear la instancia de FastAPI",
-              "description": ""
+              "description": "",
+              "filename": "main.py"
             }
           ]
         },
@@ -406,7 +423,8 @@
               "lang": "python",
               "code": "from pydantic_settings import BaseSettings, SettingsConfigDict\n\n\nclass Settings(BaseSettings):\n    app_name: str\n    admin_email: str\n    database_url: str\n    database_ram_url: str\n    model_config = SettingsConfigDict(env_file=\".env\", extra=\"forbid\")\n    secret_key: str\n    algorithm: str\n    access_token_expire_minutes: int\n\n    # Cloudflare R2 Configuration (opcional)\n    r2_access_key: str = \"\"\n    r2_secret_key: str = \"\"\n    r2_endpoint: str = \"\"\n    r2_bucket_name: str = \"mi-bucket\"\n    r2_public_url: str = \"\"\n\n\nsettings = Settings()\n\n\ndef get_settings():\n    return settings",
               "context": "Variables de entorno tipadas",
-              "description": ""
+              "description": "",
+              "filename": "app/core/config.py"
             },
             {
               "id": "03-application-configuration-3",
@@ -414,7 +432,8 @@
               "lang": "python",
               "code": "# Desde cualquier parte del proyecto:\nfrom app.core.config import settings\n\nprint(settings.app_name)\nprint(settings.database_url)",
               "context": "Singleton de Settings",
-              "description": ""
+              "description": "",
+              "filename": "app/core/config.py"
             }
           ]
         },
@@ -436,7 +455,8 @@
               "lang": "python",
               "code": "from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom app.core.config import settings\nfrom app.models.base import Base\n\nSQLALCHEMY_DATABASE_URL = settings.database_url\n\nengine = create_async_engine(\n    SQLALCHEMY_DATABASE_URL,\n    echo=False,\n    pool_pre_ping=True\n)\n\nSessionLocal = async_sessionmaker(\n    bind=engine,\n    autocommit=False,\n    autoflush=False,\n    expire_on_commit=False,\n    class_=AsyncSession\n)\n\n\nasync def get_db():\n    async with SessionLocal() as session:\n        yield session",
               "context": "Crear el engine asíncrono",
-              "description": ""
+              "description": "",
+              "filename": "app/core/database.py"
             },
             {
               "id": "03-application-configuration-5",
@@ -444,7 +464,8 @@
               "lang": "python",
               "code": "# Uso en un endpoint:\nfrom fastapi import Depends\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom app.core.database import get_db\n\n\n@router.get(\"/items\")\nasync def get_items(conex: AsyncSession = Depends(get_db)):\n    # conex está lista para usar\n    # se cierra automáticamente al terminar la petición\n    ...",
               "context": "El generador `get_db`",
-              "description": "`get_db` es un generador asíncrono que usa `yield` para proporcionar la sesión. FastAPI la usa como dependencia, asegurando que la sesión se cree al iniciar la petición y se cierre automáticamente al finalizar."
+              "description": "`get_db` es un generador asíncrono que usa `yield` para proporcionar la sesión. FastAPI la usa como dependencia, asegurando que la sesión se cree al iniciar la petición y se cierre automáticamente al finalizar.",
+              "filename": "app/core/database.py"
             }
           ]
         }
@@ -474,7 +495,8 @@
               "lang": "text",
               "code": "1. Heredan de `Base` (importado de `app/models/base.py`)\n2. `__tablename__` en minúsculas plural\n3. Usa `Mapped[]` y `mapped_column()` (nuevo estilo SQLAlchemy 2.0)\n4. Define Enums en el mismo archivo del modelo (como `str, Enum`)\n5. Usa `TYPE_CHECKING` para imports circulares en relaciones\n6. Relaciones con `back_populates` (bidireccionales)\n7. `cascade=\"all, delete-orphan\"` en relaciones padre → hijo",
               "context": "Reglas",
-              "description": ""
+              "description": "",
+              "filename": "app/models/base.py"
             }
           ]
         },
@@ -496,7 +518,8 @@
               "lang": "python",
               "code": "from enum import Enum\nfrom typing import TYPE_CHECKING\n\nfrom sqlalchemy import Boolean, ForeignKey, Numeric, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\nif TYPE_CHECKING:\n    from app.models.md_Distributor import Distributor\n\n\nclass ProductCategory(str, Enum):\n    ELECTRONICS = \"electrónica\"\n    CLOTHING = \"ropa\"\n    FOOD = \"alimentos\"\n    BOOKS = \"libros\"\n    SPORTS = \"deportes\"\n\n\nclass Product(Base):\n    __tablename__ = \"products\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    distributor_id: Mapped[int] = mapped_column(ForeignKey(\"distributors.id\"), nullable=False)\n    name: Mapped[str] = mapped_column(String(150), nullable=False)\n    description: Mapped[str] = mapped_column(String(500), nullable=True)\n    price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)\n    is_discount: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)\n    stock: Mapped[int] = mapped_column(default=0, nullable=False)\n    category: Mapped[str] = mapped_column(String(50), nullable=False)\n    image_url: Mapped[str] = mapped_column(String(500), nullable=True)\n\n    distributor: Mapped[\"Distributor\"] = relationship(back_populates=\"products\")",
               "context": "Product — modelo con categoría enum y FK",
-              "description": "Ejemplo completo de modelo Product con ForeignKey a distribuidor, enum de categoría y relación bidireccional."
+              "description": "Ejemplo completo de modelo Product con ForeignKey a distribuidor, enum de categoría y relación bidireccional.",
+              "filename": "app/models/md_Product.py"
             }
           ]
         },
@@ -518,7 +541,8 @@
               "lang": "python",
               "code": "from datetime import datetime\nfrom enum import Enum\nfrom typing import TYPE_CHECKING\n\nfrom sqlalchemy import DateTime, ForeignKey, Numeric, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\nif TYPE_CHECKING:\n    from app.models.md_User import User\n    from app.models.md_OrderItem import OrderItem\n\n\nclass OrderStatus(str, Enum):\n    PENDING = \"pendiente\"\n    SHIPPED = \"enviado\"\n    DELIVERED = \"entregado\"\n\n\nclass Order(Base):\n    __tablename__ = \"orders\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    user_id: Mapped[int] = mapped_column(ForeignKey(\"users.id\"), nullable=False)\n    status: Mapped[str] = mapped_column(String(20), nullable=False, default=OrderStatus.PENDING.value)\n    total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0)\n    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)\n    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)\n\n    user: Mapped[\"User\"] = relationship(back_populates=\"orders\")\n    items: Mapped[list[\"OrderItem\"]] = relationship(back_populates=\"order\", cascade=\"all, delete-orphan\")",
               "context": "Order — modelo con created_at y updated_at",
-              "description": "Ejemplo de modelo Order con timestamps y relación uno-a-muchos con OrderItem."
+              "description": "Ejemplo de modelo Order con timestamps y relación uno-a-muchos con OrderItem.",
+              "filename": "app/models/md_Order.py"
             }
           ]
         },
@@ -540,7 +564,8 @@
               "lang": "python",
               "code": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\n\nclass Distributor(Base):\n    __tablename__ = \"distributors\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)\n    contact_email: Mapped[str] = mapped_column(String(100), nullable=True)\n    phone: Mapped[str] = mapped_column(String(20), nullable=True)\n    address: Mapped[str] = mapped_column(String(255), nullable=True)\n    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)\n\n    products: Mapped[list[\"Product\"]] = relationship(back_populates=\"distributor\", cascade=\"all, delete-orphan\")",
               "context": "Distributor — modelo con campo unique",
-              "description": "Ejemplo de modelo Distributor con campo `name` único y relación inversa a productos."
+              "description": "Ejemplo de modelo Distributor con campo `name` único y relación inversa a productos.",
+              "filename": "app/models/md_Distributor.py"
             }
           ]
         },
@@ -562,7 +587,8 @@
               "lang": "python",
               "code": "from app.models.base import Base\nfrom app.models.md_Distributor import Distributor\nfrom app.models.md_Order import Order, OrderStatus\nfrom app.models.md_OrderItem import OrderItem\nfrom app.models.md_Product import Product, ProductCategory\nfrom app.models.md_User import User, UserRole\n\n__all__ = [\n    \"Base\",\n    \"Distributor\",\n    \"Order\",\n    \"OrderItem\",\n    \"OrderStatus\",\n    \"Product\",\n    \"ProductCategory\",\n    \"User\",\n    \"UserRole\",\n]",
               "context": "Centralizar imports en `__init__.py`",
-              "description": "Re-exporta todos los modelos desde `app/models/__init__.py` para centralizar imports."
+              "description": "Re-exporta todos los modelos desde `app/models/__init__.py` para centralizar imports.",
+              "filename": "app/models/__init__.py"
             }
           ]
         }
@@ -614,7 +640,8 @@
               "lang": "python",
               "code": "from pydantic import Field\n\nfrom . import BaseSchema\n\n\nclass ProductBase(BaseSchema):\n    name: str = Field(max_length=150)\n    description: str | None = Field(default=None, max_length=500)\n    price: float\n    is_discount: bool = False\n    stock: int = 0\n    category: str = Field(max_length=50)\n    image_url: str | None = Field(default=None, max_length=500)\n\n\nclass ProductCreate(ProductBase):\n    pass\n\n\nclass ProductUpdate(BaseSchema):\n    name: str | None = Field(default=None, max_length=150)\n    description: str | None = Field(default=None, max_length=500)\n    price: float | None = None\n    is_discount: bool | None = None\n    stock: int | None = None\n    category: str | None = Field(default=None, max_length=50)\n    image_url: str | None = Field(default=None, max_length=500)\n\n\nclass ProductRead(ProductBase):\n    id: int",
               "context": "Schema básico",
-              "description": "Ejemplo concreto del patrón de 4 clases: ProductBase, ProductCreate, ProductUpdate y ProductRead."
+              "description": "Ejemplo concreto del patrón de 4 clases: ProductBase, ProductCreate, ProductUpdate y ProductRead.",
+              "filename": "app/schemas/product_schema.py"
             }
           ]
         },
@@ -636,7 +663,8 @@
               "lang": "python",
               "code": "from pydantic import Field\nfrom . import BaseSchema\nfrom .user_schema import UserRead\nfrom .order_item_schema import OrderItemRead, OrderItemCheckoutRead\nfrom datetime import datetime\n\n\nclass OrderBase(BaseSchema):\n    user_id: int\n    status: str = \"pendiente\"\n    total_amount: float = 0\n\n\nclass OrderCreate(OrderBase):\n    pass\n\n\nclass OrderItemRequest(BaseSchema):\n    product_id: int\n    quantity: int = Field(gt=0)\n\n\nclass OrderCheckoutRequest(BaseSchema):\n    items: list[OrderItemRequest] = Field(min_length=1)\n\n\nclass OrderUpdate(BaseSchema):\n    user_id: int | None = None\n    status: str | None = None\n    total_amount: float | None = None\n\n\nclass OrderRead(OrderBase):\n    id: int\n    created_at: datetime\n    updated_at: datetime\n    user: UserRead | None = None\n    items: list[OrderItemRead] = []\n\n\nclass PaymentRequest(BaseSchema):\n    payment_method: str = Field(pattern=\"^(paypal|tarjeta)$\")\n    transaction_id: str = Field(min_length=1, max_length=100)",
               "context": "Order — validación regex, relaciones anidadas y listas",
-              "description": "Schemas de Order con Field(gt=0) para cantidad, Field(pattern=...) para método de pago, UserRead anidado y listas de OrderItemRead."
+              "description": "Schemas de Order con Field(gt=0) para cantidad, Field(pattern=...) para método de pago, UserRead anidado y listas de OrderItemRead.",
+              "filename": "app/schemas/order_schema.py"
             }
           ]
         },
@@ -658,7 +686,8 @@
               "lang": "python",
               "code": "from pydantic import Field\nfrom . import BaseSchema\n\n\nclass DistributorUpdate(BaseSchema):\n    name: str | None = Field(default=None, max_length=100)\n    contact_email: str | None = Field(default=None, max_length=100)\n    phone: str | None = Field(default=None, max_length=20)\n    address: str | None = Field(default=None, max_length=255)\n    is_active: bool | None = None",
               "context": "Permitir PATCH parcial",
-              "description": "El `Update` schema SIEMPRE tiene todos los campos como `None | None` para permitir actualizaciones parciales:"
+              "description": "El `Update` schema SIEMPRE tiene todos los campos como `None | None` para permitir actualizaciones parciales:",
+              "filename": "app/schemas/distributor_schema.py"
             }
           ]
         },
@@ -680,7 +709,8 @@
               "lang": "python",
               "code": "from pydantic import BaseModel, ConfigDict\n\n\nclass BaseSchema(BaseModel):\n    model_config = ConfigDict(from_attributes=True, str_strip_whitespace=True)",
               "context": "Crear BaseSchema",
-              "description": "Define un BaseSchema propio con `from_attributes=True` y `str_strip_whitespace=True`."
+              "description": "Define un BaseSchema propio con `from_attributes=True` y `str_strip_whitespace=True`.",
+              "filename": "app/schemas/__init__.py"
             },
             {
               "id": "05-schemas-pydantic-4",
@@ -688,7 +718,8 @@
               "lang": "python",
               "code": "from .distributor_schema import (\n    DistributorCreate,\n    DistributorRead,\n    DistributorUpdate,\n)\nfrom .product_schema import (\n    ProductCreate,\n    ProductRead,\n    ProductUpdate,\n)\n# ... etc\n\n__all__ = [\n    \"BaseSchema\",\n    \"DistributorCreate\",\n    \"DistributorRead\",\n    \"DistributorUpdate\",\n    \"ProductCreate\",\n    \"ProductRead\",\n    \"ProductUpdate\",\n    # ... etc\n]",
               "context": "Re-exports en `__init__.py`",
-              "description": "Re-exporta todos los schemas desde `app/schemas/__init__.py` para importación centralizada."
+              "description": "Re-exporta todos los schemas desde `app/schemas/__init__.py` para importación centralizada.",
+              "filename": "app/schemas/__init__.py"
             }
           ]
         }
@@ -732,7 +763,8 @@
               "lang": "python",
               "code": "@router.get(\"/\", response_model=list[ProductRead])\nasync def get_products(conex: AsyncSession = Depends(get_db)):\n    try:\n        stmt = select(tbl_Product).options(selectinload(tbl_Product.distributor))\n        result = await conex.execute(stmt)\n        products = result.scalars().all()\n        return products\n    except Exception as e:\n        print(f\"Error: {e}\")\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error al obtener productos: {str(e)}\"\n        )",
               "context": "GET — Listado de entidades",
-              "description": "Retorna una lista de todas las entidades. Usa `selectinload` para cargar relaciones y evitar consultas N+1."
+              "description": "Retorna una lista de todas las entidades. Usa `selectinload` para cargar relaciones y evitar consultas N+1.",
+              "filename": "app/api/routes/rt_product.py"
             },
             {
               "id": "06-endpoints-crud-1",
@@ -740,7 +772,8 @@
               "lang": "python",
               "code": "@router.get(\"/{product_id}\", response_model=ProductRead)\nasync def get_product(product_id: int, conex: AsyncSession = Depends(get_db)):\n    try:\n        stmt = select(tbl_Product).where(tbl_Product.id == product_id).options(selectinload(tbl_Product.distributor))\n        result = await conex.execute(stmt)\n        product = result.scalar_one_or_none()\n        if not product:\n            raise HTTPException(\n                status_code=status.HTTP_404_NOT_FOUND,\n                detail=\"Producto no encontrado\"\n            )\n        return product\n    except HTTPException:\n        raise\n    except Exception as e:\n        print(f\"Error: {e}\")\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error al obtener producto: {str(e)}\"\n        )",
               "context": "GET — Individual por ID",
-              "description": "Siempre verifica `scalar_one_or_none()` y lanza 404 si no existe."
+              "description": "Siempre verifica `scalar_one_or_none()` y lanza 404 si no existe.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -762,7 +795,8 @@
               "lang": "python",
               "code": "@router.post(\"/\", response_model=UserRead, status_code=status.HTTP_201_CREATED)\nasync def create_user(user_data: UserCreate, conex: AsyncSession = Depends(get_db)):\n    try:\n        user_dict = user_data.model_dump(exclude_unset=True)\n        if 'password' in user_dict:\n            user_dict['password_hash'] = get_password_hash(user_dict.pop('password'))\n        nuevo = tbl_User(**user_dict)\n        conex.add(nuevo)\n        await conex.commit()\n        await conex.refresh(nuevo)\n        return nuevo\n    except IntegrityError as e:\n        print(f\"Error de request: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_400_BAD_REQUEST,\n            detail=f\"Error al crear usuario: {str(e)}\"\n        )\n    except Exception as e:\n        print(f\"Error con el server: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error inesperado al crear usuario: {str(e)}\"\n        )",
               "context": "POST — Creación vía JSON Schema",
-              "description": "Usa este patrón cuando los datos llegan como JSON en el body de la petición. Pydantic valida automáticamente que todos los campos requeridos estén presentes y tengan el tipo correcto."
+              "description": "Usa este patrón cuando los datos llegan como JSON en el body de la petición. Pydantic valida automáticamente que todos los campos requeridos estén presentes y tengan el tipo correcto.",
+              "filename": "app/api/routes/rt_user.py"
             },
             {
               "id": "06-endpoints-crud-3",
@@ -770,7 +804,8 @@
               "lang": "python",
               "code": "@router.post(\"/\", response_model=ProductRead, status_code=status.HTTP_201_CREATED)\nasync def create_product(\n    name: str = Form(...),\n    description: str | None = Form(None),\n    price: float = Form(...),\n    is_discount: bool = Form(False),\n    stock: int = Form(0),\n    category: str = Form(...),\n    distributor_id: int = Form(...),\n    image: UploadFile | None = File(None),\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_seller)\n):\n    try:\n        image_url = None\n        if image:\n            image_url = await storage_service.upload_image(image)\n\n        product_data = {\n            \"name\": name,\n            \"description\": description,\n            \"price\": price,\n            \"is_discount\": is_discount,\n            \"stock\": stock,\n            \"category\": category,\n            \"distributor_id\": distributor_id,\n            \"image_url\": image_url\n        }\n\n        nuevo = tbl_Product(**product_data)\n        conex.add(nuevo)\n        await conex.commit()\n        await conex.refresh(nuevo)\n\n        # Cargar relación explícitamente después del commit\n        stmt = select(tbl_Product).where(tbl_Product.id == nuevo.id).options(selectinload(tbl_Product.distributor))\n        result = await conex.execute(stmt)\n        nuevo = result.scalar_one()\n\n        return nuevo\n    except IntegrityError as e:\n        print(f\"Error de request: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_400_BAD_REQUEST,\n            detail=f\"Error al crear producto: {str(e)}\"\n        )\n    except HTTPException:\n        raise\n    except Exception as e:\n        print(f\"Error con el server: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error inesperado al crear producto: {str(e)}\"\n        )",
               "context": "POST — Creación vía Multipart con Subida de Archivo",
-              "description": "Usa este patrón cuando el endpoint recibe formularios multipart (con archivos). Cada campo se declara individualmente con `Form(...)` (requerido) o `File(None)` (opcional)."
+              "description": "Usa este patrón cuando el endpoint recibe formularios multipart (con archivos). Cada campo se declara individualmente con `Form(...)` (requerido) o `File(None)` (opcional).",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -792,7 +827,8 @@
               "lang": "python",
               "code": "@router.patch(\"/{user_id}\", response_model=UserRead)\nasync def update_user(\n    user_id: int,\n    user_data: UserUpdate,\n    conex: AsyncSession = Depends(get_db)\n):\n    try:\n        stmt = select(tbl_User).where(tbl_User.id == user_id)\n        result = await conex.execute(stmt)\n        user = result.scalar_one_or_none()\n        if not user:\n            raise HTTPException(\n                status_code=status.HTTP_404_NOT_FOUND,\n                detail=\"Usuario no encontrado\"\n            )\n\n        update_data = user_data.model_dump(exclude_unset=True, exclude_none=True)\n        if not update_data:\n            return user\n\n        for field, value in update_data.items():\n            setattr(user, field, value)\n\n        await conex.commit()\n        await conex.refresh(user)\n        return user\n    except HTTPException:\n        raise\n    except IntegrityError as e:\n        print(f\"Error de request: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_400_BAD_REQUEST,\n            detail=f\"Error al actualizar usuario: {str(e)}\"\n        )\n    except Exception as e:\n        print(f\"Error con el server: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error inesperado al actualizar usuario: {str(e)}\"\n        )",
               "context": "PATCH — Actualización vía Schema",
-              "description": "Usa `model_dump(exclude_unset=True, exclude_none=True)` para obtener solo los campos enviados. Luego itera con `setattr` para actualizar solo esos campos."
+              "description": "Usa `model_dump(exclude_unset=True, exclude_none=True)` para obtener solo los campos enviados. Luego itera con `setattr` para actualizar solo esos campos.",
+              "filename": "app/api/routes/rt_product.py"
             },
             {
               "id": "06-endpoints-crud-5",
@@ -800,7 +836,8 @@
               "lang": "python",
               "code": "@router.patch(\"/{product_id}\", response_model=ProductRead)\nasync def update_product(\n    product_id: int,\n    name: str | None = Form(None),\n    description: str | None = Form(None),\n    price: float | None = Form(None),\n    is_discount: bool | None = Form(None),\n    stock: int | None = Form(None),\n    category: str | None = Form(None),\n    distributor_id: int | None = Form(None),\n    image: UploadFile | None = File(None),\n    delete_image: bool = Form(False),\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_seller)\n):\n    try:\n        stmt = select(tbl_Product).where(tbl_Product.id == product_id).options(selectinload(tbl_Product.distributor))\n        result = await conex.execute(stmt)\n        product = result.scalar_one_or_none()\n\n        if not product:\n            raise HTTPException(\n                status_code=status.HTTP_404_NOT_FOUND,\n                detail=\"Producto no encontrado\"\n            )\n\n        if name is not None:\n            product.name = name\n        if description is not None:\n            product.description = description\n        if price is not None:\n            product.price = price\n        if is_discount is not None:\n            product.is_discount = is_discount\n        if stock is not None:\n            product.stock = stock\n        if category is not None:\n            product.category = category\n        if distributor_id is not None:\n            product.distributor_id = distributor_id\n\n        if delete_image and product.image_url:\n            await storage_service.delete_image(product.image_url)\n            product.image_url = None\n\n        if image:\n            if product.image_url:\n                await storage_service.delete_image(product.image_url)\n            image_url = await storage_service.upload_image(image)\n            product.image_url = image_url\n\n        await conex.commit()\n        await conex.refresh(product)",
               "context": "PATCH — Actualización vía Multipart",
-              "description": "Cada campo se verifica individualmente con `if campo is not None:`."
+              "description": "Cada campo se verifica individualmente con `if campo is not None:`.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -822,7 +859,8 @@
               "lang": "python",
               "code": "@router.delete(\"/{product_id}\", status_code=status.HTTP_204_NO_CONTENT)\nasync def delete_product(\n    product_id: int,\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_seller)\n):\n    try:\n        stmt = select(tbl_Product).where(tbl_Product.id == product_id)\n        result = await conex.execute(stmt)\n        product = result.scalar_one_or_none()\n        if not product:\n            raise HTTPException(\n                status_code=status.HTTP_404_NOT_FOUND,\n                detail=\"Producto no encontrado\"\n            )\n\n        await conex.delete(product)\n        await conex.commit()\n        return None\n    except HTTPException:\n        raise\n    except IntegrityError as e:\n        print(f\"Error de request: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_400_BAD_REQUEST,\n            detail=f\"Error al eliminar producto: {str(e)}\"\n        )\n    except Exception as e:\n        print(f\"Error con el server: {e}\")\n        await conex.rollback()\n        raise HTTPException(\n            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n            detail=f\"Error inesperado al eliminar producto: {str(e)}\"\n        )",
               "context": "DELETE — Eliminar entidad",
-              "description": "Siempre retorna `status_code=status.HTTP_204_NO_CONTENT` y `return None`."
+              "description": "Siempre retorna `status_code=status.HTTP_204_NO_CONTENT` y `return None`.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         }
@@ -866,7 +904,8 @@
               "lang": "text",
               "code": "| Tipo      | Prefijo    | Ejemplo                        |\n|-----------|------------|--------------------------------|\n| Rutas     | `rt_`      | `rt_product.py`, `rt_user.py`  |\n| Modelos   | `md_`      | `md_Product.py`, `md_User.py`  |\n| Schemas   | `{entidad}_schema` | `product_schema.py`     |\n| Tests     | `test_rt_` | `test_rt_product.py`           |",
               "context": "Identificar cada capa por su prefijo",
-              "description": ""
+              "description": "",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -888,7 +927,8 @@
               "lang": "python",
               "code": "# Modelo → alias tbl_\nfrom app.models.md_Product import Product as tbl_Product\nfrom app.models.md_User import User as tbl_User\nfrom app.models.md_Order import Order as tbl_Order\n\n# Schema → sin alias (se usa el nombre de clase directamente)\nfrom app.schemas.product_schema import ProductCreate, ProductRead, ProductUpdate",
               "context": "Modelos → alias `tbl_`, Schemas → sin alias",
-              "description": "Los modelos se importan con alias `tbl_`; los schemas se usan con su nombre de clase directamente."
+              "description": "Los modelos se importan con alias `tbl_`; los schemas se usan con su nombre de clase directamente.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -910,7 +950,8 @@
               "lang": "python",
               "code": "# SQLAlchemy — usar Mapped[] SIEMPRE\nid: Mapped[int] = mapped_column(primary_key=True)\nname: Mapped[str] = mapped_column(String(150), nullable=False)\nprice: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)\nis_discount: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)\n\n# Pydantic — usar | None (Union syntax) y Field()\nname: str = Field(max_length=150)\ndescription: str | None = Field(default=None, max_length=500)\n\n# FastAPI — tipar params de ruta y query\nasync def get_product(product_id: int, conex: AsyncSession = Depends(get_db)):\n\n# Todos los endpoints son async\nasync def create_product(...):",
               "context": "Tipar cada capa correctamente",
-              "description": "Convenciones de tipado: Mapped[] para SQLAlchemy, | None para opcionales en Pydantic, y siempre async con tipos explícitos en FastAPI."
+              "description": "Convenciones de tipado: Mapped[] para SQLAlchemy, | None para opcionales en Pydantic, y siempre async con tipos explícitos en FastAPI.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -932,7 +973,8 @@
               "lang": "python",
               "code": "conex                     # Sesión de BD (nunca db, nunca session)\nnuevo                     # Instancia creada (nuevo registro)\nproduct / user / order    # Instancia recuperada de BD\ntbl_Product               # Alias del modelo SQLAlchemy\nProductCreate             # Schema de creación\nProductRead               # Schema de respuesta\nProductUpdate             # Schema de actualización\nstmt                      # Statement SQLAlchemy",
               "context": "Convenciones para nombrar variables",
-              "description": "Convenciones de nombres: `conex` para sesión, `nuevo` para instancias creadas, `stmt` para statements SQLAlchemy."
+              "description": "Convenciones de nombres: `conex` para sesión, `nuevo` para instancias creadas, `stmt` para statements SQLAlchemy.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         }
@@ -976,7 +1018,8 @@
               "lang": "python",
               "code": "try:\n    # Lógica principal\n    ...\n\nexcept HTTPException:\n    # Re-lanzar excepciones HTTP ya construidas (como 404)\n    raise\n\nexcept IntegrityError as e:\n    # Error de integridad (FK duplicado, unique constraint, etc.)\n    print(f\"Error de request: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_400_BAD_REQUEST,\n        detail=f\"Error al crear entidad: {str(e)}\"\n    )\n\nexcept Exception as e:\n    # Cualquier otro error inesperado\n    print(f\"Error con el server: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n        detail=f\"Error inesperado al crear entidad: {str(e)}\"\n    )",
               "context": "Los 3 bloques de captura",
-              "description": "Siempre usa TRES bloques en este orden específico:"
+              "description": "Siempre usa TRES bloques en este orden específico:",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -998,7 +1041,8 @@
               "lang": "text",
               "code": "| Código | Constante                            | Uso                                       |\n|--------|--------------------------------------|-------------------------------------------|\n| 200    | `status.HTTP_200_OK`                 | Éxito GET/PATCH                           |\n| 201    | `status.HTTP_201_CREATED`            | Éxito POST                                |\n| 204    | `status.HTTP_204_NO_CONTENT`         | Éxito DELETE                              |\n| 400    | `status.HTTP_400_BAD_REQUEST`        | Error de negocio, IntegrityError         |\n| 401    | `status.HTTP_401_UNAUTHORIZED`       | Credenciales inválidas                    |\n| 403    | `status.HTTP_403_FORBIDDEN`          | Permisos insuficientes                    |\n| 404    | `status.HTTP_404_NOT_FOUND`          | Recurso no encontrado                     |\n| 422    | (automático de Pydantic)             | Validación de schema fallida              |\n| 500    | `status.HTTP_500_INTERNAL_SERVER_ERROR` | Error inesperado del servidor          |",
               "context": "Cuándo usar cada código",
-              "description": ""
+              "description": "",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -1020,7 +1064,8 @@
               "lang": "python",
               "code": "result = await conex.execute(stmt)\nentidad = result.scalar_one_or_none()\nif not entidad:\n    raise HTTPException(\n        status_code=status.HTTP_404_NOT_FOUND,\n        detail=\"Entidad no encontrada\"\n    )",
               "context": "Patrón scalar_one_or_none",
-              "description": "Patrón estándar para verificar existencia de una entidad antes de operar sobre ella."
+              "description": "Patrón estándar para verificar existencia de una entidad antes de operar sobre ella.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -1042,7 +1087,8 @@
               "lang": "python",
               "code": "except IntegrityError as e:\n    print(f\"Error de request: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_400_BAD_REQUEST,\n        detail=f\"Error al crear entidad: {str(e)}\"\n    )",
               "context": "Rollback obligatorio antes de responder",
-              "description": "Captura IntegrityError para violaciones de unique constraint o FK, hace rollback y retorna 400."
+              "description": "Captura IntegrityError para violaciones de unique constraint o FK, hace rollback y retorna 400.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -1064,7 +1110,8 @@
               "lang": "python",
               "code": "print(f\"Error: {e}\")\nprint(f\"Error con el server: {e}\")\nprint(f\"Error de request: {e}\")",
               "context": "Usar print() para desarrollo",
-              "description": "Tres tipos de mensajes para identificar rápidamente el origen del error en consola."
+              "description": "Tres tipos de mensajes para identificar rápidamente el origen del error en consola.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         }
@@ -1108,7 +1155,8 @@
               "lang": "ini",
               "code": "[pytest]\npythonpath = .\nenv_files = .env\nasyncio_mode = auto",
               "context": "pytest.ini",
-              "description": "Configuración básica de pytest con asyncio_mode auto y variables de entorno."
+              "description": "Configuración básica de pytest con asyncio_mode auto y variables de entorno.",
+              "filename": "tests/pytest.ini"
             }
           ]
         },
@@ -1130,7 +1178,8 @@
               "lang": "python",
               "code": "import sys\nimport os\n\nsys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))\n\nimport pytest\nfrom httpx import AsyncClient, ASGITransport\nfrom sqlalchemy.ext.asyncio import create_async_engine, AsyncSession\nfrom sqlalchemy.orm import sessionmaker\n\nfrom app.core.database import get_db, Base\nfrom app.core.config import settings\n\nSQLALCHEMY_DATABASE_URL = settings.database_ram_url\n\nengine_test = create_async_engine(\n    SQLALCHEMY_DATABASE_URL,\n    echo=False\n)\n\nTestingSessionLocal = sessionmaker(\n    autocommit=False,\n    autoflush=False,\n    bind=engine_test,\n    class_=AsyncSession\n)",
               "context": "Configurar engine de test",
-              "description": "Siempre usa SQLite en RAM (`aiosqlite`) para tests. La URL viene de `settings.database_ram_url`."
+              "description": "Siempre usa SQLite en RAM (`aiosqlite`) para tests. La URL viene de `settings.database_ram_url`.",
+              "filename": "tests/conftest.py"
             }
           ]
         },
@@ -1152,7 +1201,8 @@
               "lang": "python",
               "code": "@pytest.fixture(autouse=True)\nasync def setup_database():\n    async with engine_test.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    # Crear datos de prueba\n    async with TestingSessionLocal() as session:\n        test_user = User(\n            name=\"Test User\",\n            email=\"test@user.com\",\n            password_hash=get_password_hash(\"testpass123\"),\n            role=\"vendedor\"\n        )\n        session.add(test_user)\n\n        test_distributor = Distributor(\n            name=\"Test Distributor\",\n            contact_email=\"test@distributor.com\",\n            phone=\"1234567890\",\n            address=\"Test Address\",\n            is_active=True\n        )\n        session.add(test_distributor)\n\n        await session.commit()\n\n    yield\n\n    async with engine_test.begin() as conn:\n        await conn.run_sync(Base.metadata.drop_all)",
               "context": "setup_database (autouse)",
-              "description": "Crea y destruye tablas automáticamente para cada sesión de test."
+              "description": "Crea y destruye tablas automáticamente para cada sesión de test.",
+              "filename": "tests/conftest.py"
             },
             {
               "id": "09-testing-fixtures-overrides-intro",
@@ -1168,7 +1218,8 @@
               "lang": "python",
               "code": "async def override_get_db():\n    async with TestingSessionLocal() as session:\n        yield session\n\n\nasync def override_get_current_seller():\n    async with TestingSessionLocal() as session:\n        from sqlalchemy import select\n        stmt = select(User).where(User.email == \"test@user.com\")\n        result = await session.execute(stmt)\n        test_user = result.scalar_one_or_none()\n        return test_user\n\n\n@pytest.fixture\nasync def client():\n    app.dependency_overrides[get_db] = override_get_db\n    app.dependency_overrides[get_current_seller] = override_get_current_seller\n\n    async with AsyncClient(\n        transport=ASGITransport(app=app),\n        base_url=\"http://test\"\n    ) as ac:\n        yield ac\n\n    app.dependency_overrides.clear()\n\n\n@pytest.fixture\nasync def test_distributor():\n    \"\"\"Get the test distributor from database.\"\"\"\n    async with TestingSessionLocal() as session:\n        from sqlalchemy import select\n        stmt = select(Distributor).where(Distributor.name == \"Test Distributor\")\n        result = await session.execute(stmt)\n        return result.scalar_one_or_none()",
               "context": "Dependency Overrides",
-              "description": "Reemplaza las dependencias reales por las de test."
+              "description": "Reemplaza las dependencias reales por las de test.",
+              "filename": "tests/conftest.py"
             }
           ]
         },
@@ -1190,7 +1241,8 @@
               "lang": "python",
               "code": "import pytest\nfrom httpx import AsyncClient\n\n\n@pytest.mark.asyncio\nasync def test_create_product_success(client: AsyncClient, test_distributor):\n    \"\"\"Test creating a product successfully.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"description\": \"Test description\",\n        \"price\": \"99.99\",\n        \"stock\": \"10\",\n        \"category\": \"electrónica\",\n        \"distributor_id\": str(test_distributor.id)\n    }\n\n    response = await client.post(\"/router/rt_products/\", data=product_data)\n\n    assert response.status_code == 201\n    data = response.json()\n    assert data[\"name\"] == \"Test Product\"\n    assert data[\"description\"] == \"Test description\"\n    assert float(data[\"price\"]) == 99.99\n    assert data[\"stock\"] == 10\n    assert data[\"category\"] == \"electrónica\"\n    assert \"id\" in data\n\n\n@pytest.mark.asyncio\nasync def test_create_product_missing_required_fields(client: AsyncClient, test_distributor):\n    \"\"\"Test creating product without required fields.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"price\": \"99.99\"\n    }\n\n    response = await client.post(\"/router/rt_products/\", data=product_data)\n\n    assert response.status_code == 422",
               "context": "CREATE",
-              "description": "Test de creación exitosa y validación de campos requeridos (respuesta 422)."
+              "description": "Test de creación exitosa y validación de campos requeridos (respuesta 422).",
+              "filename": "tests/test_rt_product.py"
             },
             {
               "id": "09-testing-5",
@@ -1198,7 +1250,8 @@
               "lang": "python",
               "code": "@pytest.mark.asyncio\nasync def test_read_products(client: AsyncClient):\n    \"\"\"Test reading all products.\"\"\"\n    response = await client.get(\"/router/rt_products/\")\n    assert response.status_code == 200\n    data = response.json()\n    assert isinstance(data, list)\n\n\n@pytest.mark.asyncio\nasync def test_read_product_not_found(client: AsyncClient):\n    \"\"\"Test reading a non-existent product returns 404.\"\"\"\n    response = await client.get(\"/router/rt_products/999\")\n    assert response.status_code == 404\n\n\n@pytest.mark.asyncio\nasync def test_update_product(client: AsyncClient, test_distributor):\n    \"\"\"Test updating a product.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"description\": \"Test description\",\n        \"price\": \"99.99\",\n        \"stock\": \"10\",\n        \"category\": \"electrónica\",\n        \"distributor_id\": str(test_distributor.id)\n    }\n    response = await client.patch(\"/router/rt_products/1\", data=product_data)\n    assert response.status_code == 200\n    data = response.json()\n    assert data[\"name\"] == \"Test Product\"\n\n\n@pytest.mark.asyncio\nasync def test_delete_product(client: AsyncClient):\n    \"\"\"Test deleting a product.\"\"\"\n    response = await client.delete(\"/router/rt_products/1\")\n    assert response.status_code == 204\n\n\n@pytest.mark.asyncio\nasync def test_delete_product_not_found(client: AsyncClient):\n    \"\"\"Test deleting a non-existent product returns 404.\"\"\"\n    response = await client.delete(\"/router/rt_products/999\")\n    assert response.status_code == 404",
               "context": "READ, UPDATE, DELETE",
-              "description": "Tests de listado, lectura individual, actualización y eliminación con verificación de códigos HTTP."
+              "description": "Tests de listado, lectura individual, actualización y eliminación con verificación de códigos HTTP.",
+              "filename": "tests/test_rt_product.py"
             }
           ]
         }
@@ -1242,7 +1295,8 @@
               "lang": "python",
               "code": "from datetime import datetime, timedelta\nfrom typing import Any\n\nfrom jose import JWTError, jwt\nfrom passlib.context import CryptContext\nfrom fastapi import Depends, HTTPException, status\nfrom fastapi.security import OAuth2PasswordBearer\nfrom sqlalchemy import select\nfrom sqlalchemy.ext.asyncio import AsyncSession\n\nfrom app.core.config import settings\nfrom app.core.database import get_db\nfrom app.models import User, UserRole\n\n\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"/api/login\")\n\n\ndef get_password_hash(password: str) -> str:\n    return pwd_context.hash(password)\n\n\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    return pwd_context.verify(plain_password, hashed_password)\n\n\ndef create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:\n    to_encode = data.copy()\n    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))\n    to_encode.update({\"exp\": expire})\n    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)",
               "context": "Funciones de seguridad",
-              "description": "Funciones helper: hash de contraseñas con bcrypt, verificación y creación de JWT con expiración configurable."
+              "description": "Funciones helper: hash de contraseñas con bcrypt, verificación y creación de JWT con expiración configurable.",
+              "filename": "app/core/security.py"
             }
           ]
         },
@@ -1264,7 +1318,8 @@
               "lang": "python",
               "code": "async def get_current_user(\n    token: str = Depends(oauth2_scheme),\n    conex: AsyncSession = Depends(get_db)\n):\n    \"\"\"\n    Dependencia que extrae y valida el usuario desde el token JWT.\n    \"\"\"\n    credentials_exception = HTTPException(\n        status_code=status.HTTP_401_UNAUTHORIZED,\n        detail=\"No se pudieron validar las credenciales\",\n        headers={\"WWW-Authenticate\": \"Bearer\"},\n    )\n    try:\n        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])\n        user_id: int = payload.get(\"sub\")\n        if user_id is None:\n            raise credentials_exception\n    except JWTError:\n        raise credentials_exception\n\n    stmt = select(User).where(User.id == user_id)\n    result = await conex.execute(stmt)\n    user = result.scalar_one_or_none()\n    if user is None:\n        raise credentials_exception\n    return user\n\n\nasync def get_current_seller(current_user: User = Depends(get_current_user)):\n    if current_user.role not in (UserRole.SELLER, UserRole.ADMIN):\n        raise HTTPException(\n            status_code=status.HTTP_403_FORBIDDEN,\n            detail=\"Se requieren permisos de vendedor o administrador\"\n        )\n    return current_user\n\n\nasync def get_current_admin(current_user: User = Depends(get_current_user)):\n    if current_user.role != UserRole.ADMIN:\n        raise HTTPException(\n            status_code=status.HTTP_403_FORBIDDEN,\n            detail=\"Se requieren permisos de administrador\"\n        )\n    return current_user",
               "context": "Dependencias de autenticación y roles",
-              "description": "get_current_user valida el JWT y busca el usuario. get_current_seller y get_current_admin son guardas de rol que retornan 403 si no corresponden."
+              "description": "get_current_user valida el JWT y busca el usuario. get_current_seller y get_current_admin son guardas de rol que retornan 403 si no corresponden.",
+              "filename": "app/api/deps.py"
             }
           ]
         },
@@ -1286,7 +1341,8 @@
               "lang": "python",
               "code": "@router.post(\"/login\")\nasync def login(form_data: OAuth2PasswordRequestForm = Depends(), conex: AsyncSession = Depends(get_db)):\n    stmt = select(User).where(User.email == form_data.username)\n    result = await conex.execute(stmt)\n    user = result.scalar_one_or_none()\n\n    if not user or not verify_password(form_data.password, user.password_hash):\n        raise HTTPException(\n            status_code=status.HTTP_401_UNAUTHORIZED,\n            detail=\"Credenciales incorrectas\",\n            headers={\"WWW-Authenticate\": \"Bearer\"},\n        )\n\n    access_token = create_access_token(\n        data={\"sub\": user.id},\n        expires_delta=timedelta(minutes=settings.access_token_expire_minutes)\n    )\n    return {\"access_token\": access_token, \"token_type\": \"bearer\"}",
               "context": "Login con OAuth2PasswordRequestForm",
-              "description": "Endpoint de login: recibe email y password, verifica credenciales, retorna JWT."
+              "description": "Endpoint de login: recibe email y password, verifica credenciales, retorna JWT.",
+              "filename": "app/api/routes/auth.py"
             }
           ]
         },
@@ -1308,7 +1364,8 @@
               "lang": "python",
               "code": "@router.get(\"/profile\", response_model=UserRead)\nasync def get_profile(current_user: User = Depends(get_current_user)):\n    return current_user\n\n\n@router.post(\"/admin/products\", response_model=ProductRead)\nasync def admin_create_product(\n    product_data: ProductCreate,\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_seller)\n):\n    ...\n\n\n@router.delete(\"/users/{user_id}\")\nasync def delete_user(\n    user_id: int,\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_admin)\n):\n    ...",
               "context": "Protección por roles",
-              "description": "Ejemplos: perfil público con get_current_user, creación con get_current_seller, eliminación con get_current_admin."
+              "description": "Ejemplos: perfil público con get_current_user, creación con get_current_seller, eliminación con get_current_admin.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         }
@@ -1352,7 +1409,8 @@
               "lang": "python",
               "code": "from sqlalchemy import select\nfrom app.models import Product as tbl_Product\n\nstmt = select(tbl_Product)\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()",
               "context": "SELECT *",
-              "description": "Obtiene todos los registros de la tabla usando `select()` y `scalars().all()`."
+              "description": "Obtiene todos los registros de la tabla usando `select()` y `scalars().all()`.",
+              "filename": "app/api/routes/rt_product.py"
             },
             {
               "id": "11-queries-and-eager-loading-1",
@@ -1360,7 +1418,8 @@
               "lang": "python",
               "code": "stmt = select(tbl_Product).where(tbl_Product.id == product_id)\nresult = await conex.execute(stmt)\nproduct = result.scalar_one_or_none()",
               "context": "SELECT por ID",
-              "description": "Filtra por ID con `.where()` y retorna un solo registro o None."
+              "description": "Filtra por ID con `.where()` y retorna un solo registro o None.",
+              "filename": "app/api/routes/rt_product.py"
             },
             {
               "id": "11-queries-and-eager-loading-2",
@@ -1368,7 +1427,8 @@
               "lang": "python",
               "code": "stmt = select(tbl_Product).where(tbl_Product.category == \"electrónica\").limit(10)\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()",
               "context": "Filtros y límites",
-              "description": "Combina filtros con `.where()` y límite con `.limit()` para consultas acotadas."
+              "description": "Combina filtros con `.where()` y límite con `.limit()` para consultas acotadas.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -1390,7 +1450,8 @@
               "lang": "python",
               "code": "from sqlalchemy.orm import selectinload\n\nstmt = select(tbl_Product).options(selectinload(tbl_Product.distributor))\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()\n\n# Sin eager loading → N+1 queries\n# Con selectinload → 2 queries totales",
               "context": "selectinload",
-              "description": "Carga relaciones en una segunda query. Es la opción más segura y recomendada."
+              "description": "Carga relaciones en una segunda query. Es la opción más segura y recomendada.",
+              "filename": "app/api/routes/rt_product.py"
             },
             {
               "id": "11-queries-and-eager-loading-4",
@@ -1398,7 +1459,8 @@
               "lang": "python",
               "code": "from sqlalchemy.orm import joinedload\n\nstmt = select(tbl_Product).options(joinedload(tbl_Product.distributor))\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()\n\n# joinedload hace JOIN en la misma query",
               "context": "joinedload",
-              "description": "Usa JOIN de SQL. Más eficiente para una sola relación, pero puede generar duplicados con colecciones."
+              "description": "Usa JOIN de SQL. Más eficiente para una sola relación, pero puede generar duplicados con colecciones.",
+              "filename": "app/api/routes/rt_product.py"
             }
           ]
         },
@@ -1420,7 +1482,8 @@
               "lang": "python",
               "code": "from sqlalchemy import func\n\n# Conteo total\nstmt = select(func.count()).select_from(tbl_Product)\nresult = await conex.execute(stmt)\ntotal = result.scalar()\n\n# Suma\nstmt = select(func.sum(tbl_Product.price)).where(tbl_Product.category == \"electrónica\")\nresult = await conex.execute(stmt)\ntotal_price = result.scalar()\n\n# Group by\nstmt = select(\n    tbl_Product.category,\n    func.count().label(\"cantidad\"),\n    func.sum(tbl_Product.price).label(\"total\")\n).group_by(tbl_Product.category)\nresult = await conex.execute(stmt)\nstats = result.all()",
               "context": "COUNT, SUM, GROUP BY",
-              "description": "Consultas de agregación: COUNT total, SUM por categoría y GROUP BY con label para nombres legibles."
+              "description": "Consultas de agregación: COUNT total, SUM por categoría y GROUP BY con label para nombres legibles.",
+              "filename": "app/api/routes/inventory.py"
             }
           ]
         }
@@ -1464,7 +1527,8 @@
               "lang": "text",
               "code": "from app.core.storage import storage_service\n\n# Subir imagen\nimage_url = await storage_service.upload_image(image)\n\n# Eliminar imagen\nawait storage_service.delete_image(image_url)",
               "context": "Patrón de uso",
-              "description": "El servicio se encarga de la validación y generación de nombres únicos. Solo necesitas llamar a upload y pasar el archivo."
+              "description": "El servicio se encarga de la validación y generación de nombres únicos. Solo necesitas llamar a upload y pasar el archivo.",
+              "filename": "app/core/storage.py"
             },
             {
               "id": "12-file-storage-0",
@@ -1472,7 +1536,8 @@
               "lang": "python",
               "code": "import boto3\nfrom botocore.config import Config\nfrom app.core.config import settings\n\ns3_client = boto3.client(\n    \"s3\",\n    aws_access_key_id=settings.r2_access_key,\n    aws_secret_access_key=settings.r2_secret_key,\n    endpoint_url=settings.r2_endpoint,\n    config=Config(signature_version=\"s3v4\")\n)\n\n\nasync def upload_image(file) -> str:\n    \"\"\"Sube una imagen a Cloudflare R2 y devuelve la URL pública.\"\"\"\n    from uuid import uuid4\n    from datetime import datetime\n\n    ext = file.filename.split(\".\")[-1] if file.filename else \"png\"\n    key = f\"products/{datetime.utcnow().strftime('%Y%m%d')}/{uuid4()}.{ext}\"\n\n    s3_client.upload_fileobj(\n        file.file,\n        settings.r2_bucket_name,\n        key,\n        ExtraArgs={\"ContentType\": file.content_type}\n    )\n\n    return f\"{settings.r2_public_url}/{key}\"\n\n\nasync def delete_image(image_url: str):\n    \"\"\"Elimina una imagen de Cloudflare R2.\"\"\"\n    key = image_url.replace(f\"{settings.r2_public_url}/\", \"\")\n    s3_client.delete_object(Bucket=settings.r2_bucket_name, Key=key)",
               "context": "Cloudflare R2",
-              "description": "Implementación del cliente S3 con boto3 apuntando a Cloudflare R2."
+              "description": "Implementación del cliente S3 con boto3 apuntando a Cloudflare R2.",
+              "filename": "app/core/storage.py"
             }
           ]
         }
@@ -1516,7 +1581,8 @@
               "lang": "python",
               "code": "import asyncio\nfrom sqlalchemy import select\nfrom app.core.database import SessionLocal, engine, Base\nfrom app.models import Product, ProductCategory, User, UserRole, Distributor, Order, OrderStatus, OrderItem\nfrom app.core.security import get_password_hash\n\n\nasync def seed():\n    async with engine.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    async with SessionLocal() as session:\n        # Crear usuario admin\n        admin = User(\n            name=\"Admin\",\n            email=\"admin@admin.com\",\n            password_hash=get_password_hash(\"12345678\"),\n            role=UserRole.ADMIN\n        )\n        session.add(admin)\n\n        # Crear distribuidores\n        dist = Distributor(\n            name=\"Distribuidora Central\",\n            contact_email=\"contacto@distcentral.com\",\n            phone=\"555-0100\",\n            address=\"Av. Principal 123\"\n        )\n        session.add(dist)\n        await session.flush()\n\n        # Crear productos\n        productos = [\n            Product(name=\"Laptop Gamer\", price=15000.00, category=ProductCategory.ELECTRONICS.value, stock=10, distributor_id=dist.id),\n            Product(name=\"Mouse Inalámbrico\", price=350.00, category=ProductCategory.ELECTRONICS.value, stock=50, distributor_id=dist.id),\n            Product(name=\"Camiseta Algodón\", price=250.00, category=ProductCategory.CLOTHING.value, stock=100, distributor_id=dist.id),\n        ]\n        session.add_all(productos)\n        await session.flush()\n\n        await session.commit()\n        print(\"Seed completado exitosamente\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(seed())",
               "context": "Seed básico con datos de prueba",
-              "description": "Función seed con datos de ejemplo: admin, distribuidor y productos."
+              "description": "Función seed con datos de ejemplo: admin, distribuidor y productos.",
+              "filename": "app/scripts/seed.py"
             },
             {
               "id": "13-seed-data-main",
@@ -1524,7 +1590,8 @@
               "lang": "python",
               "code": "async def main():\n    async with engine.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    async with SessionLocal() as conex:\n        try:\n            await seed_users(conex)\n            await seed_distributors(conex)\n            await seed_products(conex)\n        except Exception as e:\n            await conex.rollback()\n            raise\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
               "context": "Punto de entrada principal",
-              "description": "Estructura del punto de entrada: crea tablas, ejecuta seeds por entidad con try/except y rollback en caso de error."
+              "description": "Estructura del punto de entrada: crea tablas, ejecuta seeds por entidad con try/except y rollback en caso de error.",
+              "filename": "app/scripts/seed.py"
             }
           ]
         }
@@ -1612,7 +1679,8 @@
               "lang": "python",
               "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electrónica\"\n    CLOTHING = \"ropa\"\n    FOOD = \"alimentos\"\n    BOOKS = \"libros\"\n    SPORTS = \"deportes\"",
               "context": "ProductCategory",
-              "description": "Define las categorías de productos."
+              "description": "Define las categorías de productos.",
+              "filename": "app/models/md_Product.py"
             },
             {
               "id": "15-enums-reference-1",
@@ -1620,7 +1688,8 @@
               "lang": "python",
               "code": "class UserRole(str, Enum):\n    ADMIN = \"administrador\"\n    SELLER = \"vendedor\"\n    CLIENT = \"cliente\"",
               "context": "UserRole",
-              "description": "Define los roles de usuario en el sistema."
+              "description": "Define los roles de usuario en el sistema.",
+              "filename": "app/models/md_User.py"
             },
             {
               "id": "15-enums-reference-2",
@@ -1628,7 +1697,8 @@
               "lang": "python",
               "code": "class OrderStatus(str, Enum):\n    PENDING = \"pendiente\"\n    SHIPPED = \"enviado\"\n    DELIVERED = \"entregado\"",
               "context": "OrderStatus",
-              "description": "Define los estados posibles de una orden."
+              "description": "Define los estados posibles de una orden.",
+              "filename": "app/models/md_Order.py"
             }
           ]
         },
@@ -1658,7 +1728,8 @@
               "lang": "python",
               "code": "from app.models.md_User import User, UserRole\nfrom app.models.md_Order import Order, OrderStatus",
               "context": "Re-exportar desde __init__.py",
-              "description": "Los Enums se re-exportan junto con sus modelos desde `app/models/__init__.py` para acceso centralizado."
+              "description": "Los Enums se re-exportan junto con sus modelos desde `app/models/__init__.py` para acceso centralizado.",
+              "filename": "app/models/md_User.py"
             }
           ]
         },
