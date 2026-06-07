@@ -1,0 +1,194 @@
+{
+  "files": [
+    {
+      "slug": "python-fundamentals",
+      "title": "00 — Fundamentos del Entorno Profesional",
+      "file": "00-fundamentos-profesionales.md",
+      "fileOrder": 0,
+      "subtopics": [
+        {
+          "number": "00.1",
+          "title": "El Intérprete Nativo de Python",
+          "snippets": [
+            {
+              "id": "py-interpreter-location",
+              "order": 0,
+              "lang": "bash",
+              "code": "which python3\npython3 --version",
+              "context": "¿Dónde está instalado Python?",
+              "description": "En Linux/macOS el intérprete del sistema suele vivir en `/usr/bin/python3`. En Windows, en `C:\\Python3xx\\python.exe`."
+            },
+            {
+              "id": "py-interpreter-dangers",
+              "order": 1,
+              "lang": "text",
+              "code": "Riesgo: Romper el intérprete del sistema\n→ El SO depende de Python para herramientas como apt, yum o scripts internos.\n\nRiesgo: Conflictos entre proyectos\n→ Dos proyectos con versiones distintas de una misma librería no pueden convivir globalmente.\n\nRiesgo: Permisos elevados innecesarios\n→ sudo pip install otorga acceso total al paquete, incluyendo código malicioso.",
+              "context": "El peligro de alterar el SO",
+              "description": "Usar `sudo pip install` o instalar paquetes globalmente sin control puede romper el sistema operativo."
+            },
+            {
+              "id": "py-golden-rule",
+              "order": 2,
+              "lang": "text",
+              "code": "Regla de oro: nunca instalar dependencias de proyecto en el intérprete global del sistema.",
+              "context": "",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "number": "00.2",
+          "title": "Variables de Entorno — El PATH",
+          "snippets": [
+            {
+              "id": "py-path-how",
+              "order": 0,
+              "lang": "bash",
+              "code": "echo $PATH\n\n# Verificar qué Python se está usando\nwhich python\npython -c \"import sys; print(sys.executable)\"",
+              "context": "¿Cómo funciona el PATH?",
+              "description": "El `PATH` es una variable de entorno que le indica al SO dónde buscar ejecutables. El shell recorre cada directorio en orden, el primer acierto gana."
+            },
+            {
+              "id": "py-path-dangers",
+              "order": 1,
+              "lang": "text",
+              "code": "• Añadir directorios al PATH global puede ejecutar la versión incorrecta de una herramienta.\n• Si un directorio con un binario malicioso aparece antes que el legítimo en el PATH, se ejecutará el malicioso (path hijacking).",
+              "context": "Peligros de modificar el PATH globalmente",
+              "description": ""
+            },
+            {
+              "id": "py-path-best-practices",
+              "order": 2,
+              "lang": "text",
+              "code": "• Modificar el PATH solo para la sesión activa: export PATH=\"/mi/ruta:$PATH\"\n• Usar entornos virtuales para gestionar el PATH automáticamente\n• Verificar el intérprete activo con which python",
+              "context": "Buenas prácticas",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "number": "00.3",
+          "title": "Herramientas de Aislamiento — Entornos Virtuales (venv)",
+          "snippets": [
+            {
+              "id": "py-venv-creation",
+              "order": 0,
+              "lang": "bash",
+              "code": "python3 -m venv venv",
+              "context": "Creación",
+              "description": "Crea una carpeta `venv/` en el directorio actual con todo lo necesario para un entorno aislado."
+            },
+            {
+              "id": "py-venv-activation",
+              "order": 1,
+              "lang": "bash",
+              "code": "# Linux / macOS\nsource venv/bin/activate\n\n# Windows (cmd)\nvenv\\Scripts\\activate.bat\n\n# Windows (PowerShell)\nvenv\\Scripts\\Activate.ps1",
+              "context": "Activación por sistema operativo",
+              "description": "Una vez activado, el prompt cambia a `(venv) $` y `which python` apunta al intérprete dentro del entorno."
+            },
+            {
+              "id": "py-venv-anatomy",
+              "order": 2,
+              "lang": "text",
+              "code": "venv/\n├── bin/                   # Intérprete, scripts de activación y ejecutables\n│   ├── python             # Enlace simbólico al intérprete\n│   ├── activate           # Script de activación (bash/zsh)\n│   ├── activate.csh\n│   ├── activate.fish\n│   └── pip                # Pip del entorno\n├── lib/\n│   └── python3.xx/\n│       └── site-packages/ # Dependencias instaladas (pip install)\n├── pyvenv.cfg             # Configuración: versión de Python, home, flags\n└── include/               # Cabeceras para extensiones C",
+              "context": "Anatomía interna del directorio venv/",
+              "description": "El archivo `pyvenv.cfg` es clave: contiene la ruta al intérprete base (`home`) y define si el entorno debe ser globalmente accesible. Sin él, el entorno no funciona."
+            },
+            {
+              "id": "py-venv-deactivation",
+              "order": 3,
+              "lang": "bash",
+              "code": "deactivate",
+              "context": "Desactivación",
+              "description": "Restaura el PATH original y vuelve al intérprete del sistema."
+            }
+          ]
+        },
+        {
+          "number": "00.4",
+          "title": "Gestión Estricta de Dependencias",
+          "snippets": [
+            {
+              "id": "py-reqs-txt",
+              "order": 0,
+              "lang": "text",
+              "code": "fastapi==0.115.0\nuvicorn[standard]==0.30.0\nsqlalchemy==2.0.35",
+              "context": "requirements.txt — Dependencias explícitas",
+              "description": "Pinchar versiones con `==` garantiza reproducibilidad. Usar `>=` solo para rangos amplios; nunca en producción sin bloquear."
+            },
+            {
+              "id": "py-freeze",
+              "order": 1,
+              "lang": "bash",
+              "code": "pip freeze > requirements.txt",
+              "context": "Congelar dependencias",
+              "description": "`pip freeze` muestra todas las dependencias instaladas (incluyendo sub-dependencias). Esto asegura que otro desarrollador obtenga exactamente los mismos paquetes al ejecutar `pip install -r requirements.txt`."
+            },
+            {
+              "id": "py-modern-tools",
+              "order": 2,
+              "lang": "text",
+              "code": "pip-tools (pip-compile) → Compila requirements.in en requirements.txt bloqueado\nPoetry                 → Gestor todo-en-uno: pyproject.toml + poetry.lock\nPDM                    → Similar a Poetry, énfasis en PEP 517/518\nuv                     → Gestor ultrarápido en Rust, compatible con pip",
+              "context": "Herramientas modernas de empaquetado",
+              "description": ""
+            },
+            {
+              "id": "py-pyproject",
+              "order": 3,
+              "lang": "toml",
+              "code": "[project]\nname = \"miapp\"\nversion = \"0.1.0\"\ndependencies = [\n    \"fastapi>=0.100\",\n    \"sqlalchemy>=2.0\",\n]\n\n[build-system]\nrequires = [\"setuptools>=68\"]\nbuild-backend = \"setuptools.build_meta\"",
+              "context": "pyproject.toml — El estándar moderno (PEP 517/518)",
+              "description": "Reemplazo moderno de `setup.py`. Permite declarar metadatos, dependencias y configuración de herramientas en un solo archivo."
+            }
+          ]
+        },
+        {
+          "number": "00.5",
+          "title": "Configuración de Aplicaciones y Seguridad",
+          "snippets": [
+            {
+              "id": "py-env-principle",
+              "order": 0,
+              "lang": "text",
+              "code": "Principio 12-Factor App: Almacenar la configuración en variables de entorno.\n\nAplica a: API keys, credenciales de BD, secretos JWT, URLs de servicios, etc.",
+              "context": "El principio de las variables de entorno",
+              "description": ""
+            },
+            {
+              "id": "py-bad-practice",
+              "order": 1,
+              "lang": "python",
+              "code": "# ❌ NUNCA hacer esto\nDB_PASSWORD = \"supersecreto123\"\nAPI_KEY = \"sk-abc123...\"\nSECRET_KEY = \"clave-fija\"",
+              "context": "Malas prácticas — Credenciales hardcodeadas",
+              "description": "Riesgos: el secreto queda expuesto en git, cualquiera con acceso al código puede verlo, y rotar credenciales requiere modificar y redeployar."
+            },
+            {
+              "id": "py-good-practice",
+              "order": 2,
+              "lang": "python",
+              "code": "import os\n\nDB_PASSWORD = os.environ[\"DB_PASSWORD\"]\nAPI_KEY = os.getenv(\"API_KEY\")\nSECRET_KEY = os.environ.get(\"SECRET_KEY\", \"default-inseguro\")",
+              "context": "Buena práctica — Variables de entorno",
+              "description": "Acceso a variables de entorno: `os.environ[\"VAR\"]` lanza KeyError si no existe, `os.getenv(\"VAR\")` devuelve None, `os.environ.get(\"VAR\", \"default\")` usa valor por defecto."
+            },
+            {
+              "id": "py-dotenv",
+              "order": 3,
+              "lang": "ini",
+              "code": "# .env (incluir en .gitignore)\nDB_PASSWORD=supersecreto123\nAPI_KEY=sk-abc123...",
+              "context": "Archivo .env para desarrollo local",
+              "description": "Usar `python-dotenv`: `from dotenv import load_dotenv; load_dotenv()`. El `.env` nunca se sube al repositorio."
+            },
+            {
+              "id": "py-gitignore",
+              "order": 4,
+              "lang": "text",
+              "code": "# .gitignore — nunca subir secretos\n.env\n*.env.local\n*.env.production\n\n# Mejor práctica: incluir .env.example con valores ficticios",
+              "context": ".gitignore — El guardián de los secretos",
+              "description": "Si por accidente se sube un `.env`, el secreto queda en el historial de git para siempre (incluso si se elimina después). Usa un `.env.example` con valores ficticios."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
