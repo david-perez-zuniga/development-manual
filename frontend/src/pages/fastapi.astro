@@ -1,0 +1,340 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Admonition from '../components/ui/Admonition.astro';
+import TerminalWindow from '../components/ui/TerminalWindow.astro';
+import { files } from '../data/code-snippets.json';
+
+import { createHighlighter } from 'shiki';
+
+const highlighter = await createHighlighter({
+  themes: ['github-dark'],
+  langs: ['python', 'bash', 'json', 'ini', 'sql', 'text'],
+});
+
+function highlight(code, lang) {
+  try {
+    let html = highlighter.codeToHtml(code, { lang: lang === 'env' ? 'ini' : lang, theme: 'github-dark' });
+    return html.replace(/style="background-color:[^;"]*;?/g, '');
+  } catch {
+    let html = highlighter.codeToHtml(code, { lang: 'text', theme: 'github-dark' });
+    return html.replace(/style="background-color:[^;"]*;?/g, '');
+  }
+}
+---
+
+<BaseLayout title="FastAPI — Development Manual" showBack={true}>
+  <section class="snippets-section" id="snippets-section">
+    <h2 class="snippets-section__title">FastAPI</h2>
+    <div class="snippets-layout">
+      <nav class="snippets-sidebar" id="snippets-sidebar">
+        <div class="snippets-sidebar__header">Archivos</div>
+        {files.map((file) => (
+          <a href={`#${file.slug}`} class="snippets-sidebar__item" data-slug={file.slug}>
+            <span class="snippets-sidebar__num">{String(file.fileOrder).padStart(2, '0')}</span>
+            <span class="snippets-sidebar__label">{file.title.replace(/^\d+\s*—\s*/, '')}</span>
+          </a>
+        ))}
+      </nav>
+      <div class="snippets-content">
+        <Admonition type="note" label="PYTHON">
+          Si no tienes Python instalado, descárgalo desde <a href="https://www.python.org/downloads/" target="_blank" rel="noopener noreferrer">python.org/downloads</a>.
+        </Admonition>
+      {files.map((file) => (
+      <section id={file.slug} class="file-section">
+        <div class="file-section__header">
+          <h3 class="file-section__title">{file.title}</h3>
+        </div>
+        {file.subtopics.length > 0 ? (
+          file.subtopics.map((subtopic) => (
+            <div class="subtopic-block">
+              <div class="subtopic-block__header">
+                <span class="subtopic-block__number">{subtopic.number}</span>
+                <h4 class="subtopic-block__title">{subtopic.title}</h4>
+              </div>
+              {subtopic.snippets.map((snippet) => (
+                <div class="snippet-block">
+                  {snippet.context && (
+                    <h5 class="snippet-block__context">{snippet.context}</h5>
+                  )}
+                  {snippet.description && (
+                    <p class="snippet-block__desc">{snippet.description}</p>
+                  )}
+                  <TerminalWindow>
+                    <div class="highlighted-code" set:html={highlight(snippet.code, snippet.lang)} />
+                  </TerminalWindow>
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <p class="subtopic-empty">Sin bloques de c&oacute;digo.</p>
+        )}
+      </section>
+    ))}
+    </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .snippets-section {
+    max-width: 56rem;
+    margin: 0 auto;
+    padding: 6rem var(--margin-desktop);
+  }
+
+  @media (min-width: 1024px) {
+    .snippets-section {
+      max-width: 76rem;
+    }
+  }
+
+  .snippets-section__title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+
+  .snippets-layout {
+    display: flex;
+    gap: 2rem;
+    position: relative;
+  }
+
+  .snippets-sidebar {
+    position: sticky;
+    top: 5rem;
+    align-self: flex-start;
+    width: 200px;
+    flex-shrink: 0;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0.75rem;
+    background: var(--surface-container-high);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-xl);
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+  }
+
+  @media (min-width: 1024px) {
+    .snippets-sidebar {
+      display: flex;
+    }
+  }
+
+  .snippets-sidebar__header {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--on-surface-variant);
+    opacity: 0.5;
+    padding: 0.25rem 0.5rem 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 0.25rem;
+  }
+
+  .snippets-sidebar__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--on-surface-variant);
+    transition: all 0.15s;
+    font-size: 0.8rem;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .snippets-sidebar__item:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--on-surface);
+  }
+
+  .snippets-sidebar__item--active {
+    background: rgba(110, 229, 145, 0.1);
+    color: var(--primary);
+  }
+
+  .snippets-sidebar__num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--primary);
+    opacity: 0.6;
+    min-width: 1.5rem;
+  }
+
+  .snippets-sidebar__item--active .snippets-sidebar__num {
+    opacity: 1;
+  }
+
+  .snippets-sidebar__label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .snippets-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .snippets-section .file-section {
+    margin-bottom: 4rem;
+    scroll-margin-top: 5rem;
+  }
+
+  .snippets-section .file-section__header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .snippets-section .file-section__title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--on-surface);
+  }
+
+  .snippets-section .file-section__empty {
+    font-family: 'Inter', sans-serif;
+    color: var(--on-surface-variant);
+    font-style: italic;
+  }
+
+  .subtopic-block {
+    margin-bottom: 2.5rem;
+  }
+
+  .subtopic-block__header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .subtopic-block__number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+    background: rgba(110, 229, 145, 0.1);
+    padding: 0.15rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .subtopic-block__title {
+    font-family: 'Hanken Grotesk', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--on-surface);
+    margin: 0;
+  }
+
+  .snippet-block {
+    margin-bottom: 1.5rem;
+    margin-left: 1rem;
+  }
+
+  .snippet-block__context {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--secondary);
+    margin: 0 0 0.25rem 0;
+  }
+
+  .snippet-block__desc {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--on-surface-variant);
+    margin: 0 0 0.75rem 0;
+  }
+
+  .highlighted-code {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .highlighted-code pre {
+    background: transparent !important;
+    margin: 0;
+    padding: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-x: auto;
+  }
+
+  .highlighted-code code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .subtopic-empty {
+    font-family: 'Inter', sans-serif;
+    color: var(--on-surface-variant);
+    font-style: italic;
+  }
+</style>
+
+<script>
+  // Smooth scrolling
+  document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+    anchor.addEventListener('click', (e) => {
+      const href = anchor.getAttribute('href');
+      if (!href) return;
+      const targetId = href.substring(1);
+      const targetElement = document.getElementById(targetId);
+      if (targetElement) {
+        e.preventDefault();
+        window.scrollTo({
+          top: targetElement.offsetTop - 80,
+          behavior: 'smooth',
+        });
+      }
+    });
+  });
+
+  // Scroll spy
+  const sidebar = document.getElementById('snippets-sidebar');
+  if (sidebar) {
+    const links = sidebar.querySelectorAll('.snippets-sidebar__item');
+    const sections = Array.from(links).map(link =>
+      document.getElementById(link.getAttribute('data-slug'))
+    ).filter(Boolean);
+
+    function updateActive() {
+      let current = links[0];
+      const scrollTop = window.scrollY + 120;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        if (sections[i].offsetTop <= scrollTop) {
+          current = links[i];
+          break;
+        }
+      }
+      links.forEach(l => l.classList.remove('snippets-sidebar__item--active'));
+      current?.classList.add('snippets-sidebar__item--active');
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+</script>
