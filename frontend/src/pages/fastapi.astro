@@ -22,7 +22,7 @@ function highlight(code, lang) {
 }
 ---
 
-<BaseLayout title="FastAPI — Development Manual" showBack={true}>
+<BaseLayout title="FastAPI - Manual" showBack={true} favicon="/FastAPI.webp">
   <section class="snippets-section" id="snippets-section">
     <h2 class="snippets-section__title">FastAPI</h2>
     <div class="snippets-layout">
@@ -59,9 +59,13 @@ function highlight(code, lang) {
                   {snippet.description && (
                     <p class="snippet-block__desc">{snippet.description}</p>
                   )}
+                  {snippet.code ? (
                   <TerminalWindow>
                     <div class="highlighted-code" set:html={highlight(snippet.code, snippet.lang)} />
                   </TerminalWindow>
+                  ) : (
+                    <div class="snippet-block__text"></div>
+                  )}
                 </div>
               ))}
             </div>
