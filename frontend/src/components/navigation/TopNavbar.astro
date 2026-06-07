@@ -1,14 +1,21 @@
 ---
 export interface Props {
   siteTitle?: string;
+  showBack?: boolean;
 }
 
-const { siteTitle = 'FastAPI Manual' } = Astro.props;
+const { siteTitle = 'FastAPI Manual', showBack = false } = Astro.props;
 ---
 
 <nav class="topnavbar" role="navigation" aria-label="Navegación principal">
   <div class="topnavbar__inner">
     <span class="topnavbar__brand" id="topnavbar-brand">{siteTitle}</span>
+    {showBack && (
+      <a href="/" class="topnavbar__back">
+        <span class="material-symbols-outlined topnavbar__back-arrow">chevron_left</span>
+        Regresar
+      </a>
+    )}
   </div>
 </nav>
 
@@ -41,6 +48,30 @@ const { siteTitle = 'FastAPI Manual' } = Astro.props;
     font-weight: 700;
     color: var(--primary);
     cursor: pointer;
+  }
+
+  .topnavbar__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--on-surface-variant);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+    margin-left: 0.75rem;
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--border-color);
+  }
+
+  .topnavbar__back:hover {
+    color: var(--primary);
+  }
+
+  .topnavbar__back-arrow {
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 700;
   }
 </style>
 
