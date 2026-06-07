@@ -1,13 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import ManualCard from '../components/ui/ManualCard.astro';
-import FeatureCard from '../components/ui/FeatureCard.astro';
-import ChecklistItem from '../components/ui/ChecklistItem.astro';
-import SectionFooter from '../components/ui/SectionFooter.astro';
-import TerminalWindow from '../components/ui/TerminalWindow.astro';
 ---
 
-<BaseLayout title="Manual de FastAPI">
+<BaseLayout title="Development Manual">
   <section class="hero">
     <div class="hero__ambient">
       <div class="hero__glow hero__glow--primary"></div>
@@ -21,7 +17,7 @@ import TerminalWindow from '../components/ui/TerminalWindow.astro';
         </div>
       </div>
     </div>
-    <h1 class="hero__title">Manual de FastAPI</h1>
+    <h1 class="hero__title">Development Manual</h1>
     <div class="hero__actions">
       <a class="hero__cta" href="#manuals-section">
         Explorar Módulos
@@ -36,97 +32,9 @@ import TerminalWindow from '../components/ui/TerminalWindow.astro';
         number="01"
         title="FastAPI"
         description="Domina la creaci&oacute;n de APIs modernas, r&aacute;pidas y tipadas con Python."
-        topics={[
-          { label: "Introducci&oacute;n", href: "#backend-fastapi" },
-          { label: "Instalaci&oacute;n", href: "#instalacion-fastapi" },
-          { label: "Primeros Pasos", href: "#primeros-pasos-fastapi" },
-          { label: "Modelos Pydantic", href: "#backend-fastapi" },
-        ]}
+        href="/fastapi"
       />
     </div>
-  </section>
-  <section class="content-section" id="backend-fastapi">
-    <header class="content-section__header">
-      <div class="content-section__breadcrumb">
-        <span>01</span>
-        <span class="material-symbols-outlined content-section__chevron">chevron_right</span>
-        <span>FastAPI</span>
-      </div>
-      <h2 class="content-section__title">FastAPI</h2>
-      <p class="content-section__description">
-        FastAPI es un framework web moderno, r&aacute;pido (de alto rendimiento) para construir APIs con Python 3.7+
-        basado en las anotaciones de tipos est&aacute;ndar de Python.
-      </p>
-    </header>
-    <div class="content-section__features">
-      <FeatureCard
-        variant="glass"
-        iconColor="primary"
-        icon="bolt"
-        title="Alto Rendimiento"
-        description="Rendimiento muy alto, a la par con NodeJS y Go gracias a Starlette y Pydantic."
-      />
-      <FeatureCard
-        variant="glass"
-        iconColor="secondary"
-        icon="verified_user"
-        title="Tipado Fuerte"
-        description="Reduce los errores en un 40% aproximadamente mediante el uso de Type Hinting."
-      />
-    </div>
-    <div class="content-section__instalacion" id="instalacion-fastapi">
-      <h3 class="content-section__section-title">
-        <span class="material-symbols-outlined content-section__section-icon">download</span>
-        Instalaci&oacute;n
-      </h3>
-      <TerminalWindow title="bash — installation">
-        <div class="terminal-line">
-          <span class="terminal-prompt">$</span>
-          <span class="typing-cursor" id="typing-cmd-1"></span>
-        </div>
-        <div class="terminal-line">
-          <span class="terminal-prompt">$</span>
-          <span id="typing-cmd-2"></span>
-        </div>
-      </TerminalWindow>
-    </div>
-    <div class="content-section__code" id="primeros-pasos-fastapi">
-      <div class="content-section__code-header">
-        <h3 class="content-section__code-title">
-          <span class="material-symbols-outlined content-section__code-icon">code</span>
-          Primeros Pasos
-        </h3>
-        <span class="content-section__filename">main.py</span>
-      </div>
-      <TerminalWindow title="main.py">
-        <pre class="code-block__pre"><code><span class="code-block__keyword">from</span> fastapi <span class="code-block__keyword">import</span> FastAPI
-
-<span class="code-block__variable">app</span> = FastAPI()
-
-<span class="code-block__decorator">@app.get</span>(<span class="code-block__string">"/"</span>)
-<span class="code-block__keyword">async def</span> <span class="code-block__function">read_root</span>():
-    <span class="code-block__keyword">return</span> {'{'}<span class="code-block__string">"message"</span>: <span class="code-block__string">"&iexcl;Hola Mundo!"</span>{'}'}</code></pre>
-      </TerminalWindow>
-    </div>
-    <div class="content-section__guide">
-      <h3 class="content-section__guide-title">Gu&iacute;a de Estilo</h3>
-      <div class="admonition admonition--tip">
-        <div class="admonition__header">
-          <span class="material-symbols-outlined admonition__icon">lightbulb</span>
-          <span class="admonition__label">Recomendaci&oacute;n</span>
-        </div>
-        <p class="admonition__text">
-          Utiliza siempre entornos virtuales (venv o poetry) para gestionar dependencias.
-        </p>
-      </div>
-      <ul class="content-section__checklist">
-        <ChecklistItem
-          title="Type Hinting"
-          description="Permite que FastAPI realice validaci&oacute;n de datos autom&aacute;tica."
-        />
-      </ul>
-    </div>
-    <SectionFooter />
   </section>
 </BaseLayout>
 
@@ -289,272 +197,9 @@ import TerminalWindow from '../components/ui/TerminalWindow.astro';
     gap: 1rem;
   }
 
-  .content-section {
-    max-width: 56rem;
-    margin: 0 auto;
-    padding: 6rem var(--margin-desktop);
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-  }
-
-  .content-section__breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.2;
-    font-weight: 500;
-    color: var(--primary);
-    margin-bottom: 1rem;
-  }
-
-  .content-section__chevron {
-    font-size: 14px;
-  }
-
-  .content-section__title {
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 48px;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    font-weight: 700;
-    color: var(--on-surface);
-    margin-bottom: 1.5rem;
-  }
-
-  .content-section__description {
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    line-height: 1.7;
-    font-weight: 400;
-    color: var(--on-surface-variant);
-  }
-
-  .content-section__features {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-    margin-top: 3rem;
-  }
-
-  @media (min-width: 768px) {
-    .content-section__features {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  .content-section__instalacion {
-    margin-bottom: 6rem;
-  }
-
-  .content-section__section-title {
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 24px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: var(--on-surface);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-
-  .content-section__section-icon {
-    color: var(--primary);
-  }
-
-  .terminal-line {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
-    min-height: 1.5em;
-  }
-
-  .terminal-prompt {
-    color: var(--primary);
-    opacity: 0.7;
-    flex-shrink: 0;
-  }
-
-  .typing-cursor::after {
-    content: '|';
-    animation: blink 1s infinite;
-    color: #6ee591;
-    margin-left: 2px;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .content-section__code {
-    margin-bottom: 6rem;
-  }
-
-  .content-section__code-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-
-  .content-section__code-title {
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 24px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: var(--on-surface);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .content-section__code-icon {
-    color: var(--primary);
-  }
-
-  .content-section__filename {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.2;
-    font-weight: 500;
-    color: var(--on-surface-variant);
-    background-color: var(--surface-container-high);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-default);
-  }
-
-  .code-block {
-    background-color: var(--surface-container-low);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: var(--radius-xl);
-    overflow: hidden;
-    margin-bottom: 3rem;
-  }
-
-  .code-block__pre {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    font-weight: 400;
-    padding: 1.5rem;
-    overflow-x: auto;
-    color: #cbd5e1;
-  }
-
-  .code-block__keyword {
-    color: var(--primary-container);
-  }
-
-  .code-block__variable {
-    color: var(--on-background);
-  }
-
-  .code-block__decorator {
-    color: var(--secondary);
-  }
-
-  .code-block__string {
-    color: var(--tertiary-container);
-  }
-
-  .code-block__function {
-    color: var(--secondary);
-  }
-
-  .content-section__guide-title {
-    font-family: 'Hanken Grotesk', sans-serif;
-    font-size: 24px;
-    line-height: 1.4;
-    font-weight: 600;
-    color: var(--on-surface);
-    margin-bottom: 1.5rem;
-  }
-
-  .admonition--tip {
-    border-left: 4px solid var(--primary);
-    background: rgba(110, 229, 145, 0.05);
-    padding: 1.5rem;
-    border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
-    margin-bottom: 1.5rem;
-  }
-
-  .admonition__header {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    color: var(--primary);
-    margin-bottom: 0.5rem;
-  }
-
-  .admonition__icon {
-    font-size: 1.5rem;
-  }
-
-  .admonition__label {
-    font-weight: 700;
-    font-size: 14px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .admonition__text {
-    color: var(--on-surface-variant);
-    font-size: 14px;
-  }
-
-  .content-section__checklist {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    list-style: none;
-    padding: 0;
-  }
 </style>
 
 <script>
-  // Typing Animation
-  const commands = [
-    { id: 'typing-cmd-1', text: 'pip install fastapi' },
-    { id: 'typing-cmd-2', text: 'pip install "uvicorn[standard]"' },
-  ];
-
-  async function typeWriter(elementId: string, text: string, speed = 80) {
-    const element = document.getElementById(elementId);
-    if (!element) return;
-    element.classList.add('typing-cursor');
-    element.textContent = '';
-    for (let i = 0; i < text.length; i++) {
-      element.textContent += text.charAt(i);
-      await new Promise((resolve) => setTimeout(resolve, speed));
-    }
-    element.classList.remove('typing-cursor');
-  }
-
-  async function startTypingSequence() {
-    for (const cmd of commands) {
-      await typeWriter(cmd.id, cmd.text);
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    }
-  }
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          startTypingSequence();
-          observer.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.5 }
-  );
-
-  const terminalSection = document.getElementById('instalacion-fastapi');
-  if (terminalSection) observer.observe(terminalSection);
-
   // Atmospheric hover effects
   window.addEventListener('mousemove', (e) => {
     const x = (e.clientX / window.innerWidth) * 100;
@@ -562,7 +207,7 @@ import TerminalWindow from '../components/ui/TerminalWindow.astro';
     document.body.style.background = `radial-gradient(circle at ${x}% ${y}%, #0f172a 0%, #0b1326 100%)`;
   });
 
-  // Smooth scrolling
+  // Smooth scrolling for anchor links on same page
   document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     anchor.addEventListener('click', (e) => {
       const href = anchor.getAttribute('href');
