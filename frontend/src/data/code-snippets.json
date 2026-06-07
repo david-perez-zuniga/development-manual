@@ -8,11 +8,95 @@
       "subtopics": [
         {
           "number": "01.1",
+          "title": "¿Por qué una Arquitectura por Capas?",
+          "snippets": [
+            {
+              "id": "01-project-architecture-context",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Si vienes de Django, Flask o simplemente Python plano, organizar un proyecto FastAPI puede parecer abierto a interpretación. A diferencia de Django que impone una estructura (apps, models/, views/), FastAPI te deja total libertad — y esa libertad puede llevar al caos si no se establecen reglas desde el inicio. Este tema define la arquitectura que usaremos: una separación por capas pensada para escalar con orden."
+            },
+            {
+              "id": "01-project-architecture-why-layers",
+              "order": 1,
+              "lang": "text",
+              "code": "",
+              "context": "Problema que resuelve",
+              "description": "Cuando una API crece, tener todo el código mezclado (lógica de negocio, acceso a datos, validación, rutas) vuelve el proyecto imposible de mantener. La arquitectura por capas separa responsabilidades para que cada pieza tenga un rol claro y único."
+            },
+            {
+              "id": "01-project-architecture-benefits",
+              "order": 2,
+              "lang": "text",
+              "code": "Separación de concerns → Cada capa sabe solo lo que necesita saber\nTestabilidad          → Puedes testear cada capa de forma aislada\nMantenibilidad        → Cambiar una capa no afecta a las demás\nReusabilidad          → Los schemas y modelos se usan desde múltiples rutas\nEscalabilidad         → Equipos grandes pueden trabajar en paralelo sin pisarse",
+              "context": "Beneficios",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "number": "01.2",
+          "title": "Tipos de Arquitectura",
+          "snippets": [
+            {
+              "id": "01-project-architecture-types-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Antes de decidir cómo organizar el código, conviene conocer las opciones. Cada una tiene un contexto donde brilla y otro donde estorba."
+            },
+            {
+              "id": "01-project-architecture-mvc",
+              "order": 1,
+              "lang": "text",
+              "code": "Model  → Datos y lógica de negocio\nView   → Presentación (templates HTML)\nController → Maneja requests y orquesta",
+              "context": "MVC (Model-View-Controller)",
+              "description": "No es ideal para APIs porque la \"View\" no aplica (no hay HTML que renderizar) y el Controller tiende a acumular demasiada lógica."
+            },
+            {
+              "id": "01-project-architecture-hexagonal",
+              "order": 2,
+              "lang": "text",
+              "code": "",
+              "context": "Hexagonal (Ports & Adapters)",
+              "description": "Centrada en el dominio de negocio en el centro, con \"puertos\" hacia el exterior (BD, HTTP, archivos). Ideal para aplicaciones con lógica de negocio compleja, pero puede ser excesiva para APIs CRUD estándar."
+            },
+            {
+              "id": "01-project-architecture-clean",
+              "order": 3,
+              "lang": "text",
+              "code": "",
+              "context": "Clean Architecture (Robert C. Martin)",
+              "description": "Variación de la hexagonal con más capas (entidades, casos de uso, adaptadores). Excelente para proyectos grandes y complejos, pero tiene overhead de boilerplate."
+            },
+            {
+              "id": "01-project-architecture-nlayer",
+              "order": 4,
+              "lang": "text",
+              "code": "Routes  → Endpoints HTTP, orquestan la petición\nSchemas → Validación de datos de entrada/salida\nModels  → Definición de tablas y relaciones en BD\nCore    → Configuración global, seguridad, storage",
+              "context": "Arquitectura por Capas (N-Layer) — Nuestra elección",
+              "description": "Es la que usamos en este proyecto. Simple, pragmática y suficiente para APIs CRUD."
+            }
+          ]
+        },
+        {
+          "number": "01.3",
           "title": "Árbol del Proyecto",
           "snippets": [
             {
-              "id": "01-project-architecture-0",
+              "id": "01-project-architecture-tree-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Vista general de cómo se organizan los archivos en disco. La estructura refleja directamente la separación por capas: cada carpeta es una capa."
+            },
+            {
+              "id": "01-project-architecture-0",
+              "order": 1,
               "lang": "text",
               "code": "backend/\n├── main.py                          # FastAPI app + routers\n├── requirements.txt\n├── .env                             # Variables de entorno\n├── alembic.ini\n├── alembic/                         # Migraciones\n│   └── versions/\n├── app/\n│   ├── core/\n│   │   ├── config.py                # Settings\n│   │   ├── database.py              # Async engine + get_db\n│   │   ├── security.py              # JWT, bcrypt\n│   │   └── storage.py               # Almacenamiento (S3 compatible)\n│   ├── models/\n│   │   ├── base.py                  # DeclarativeBase\n│   │   ├── md_Product.py\n│   │   ├── md_User.py\n│   │   ├── md_Order.py\n│   │   ├── md_OrderItem.py\n│   │   └── md_Distributor.py\n│   ├── schemas/\n│   │   ├── __init__.py              # BaseSchema + re-exports\n│   │   ├── product_schema.py\n│   │   ├── user_schema.py\n│   │   ├── order_schema.py\n│   │   ├── order_item_schema.py\n│   │   └── distributor_schema.py\n│   ├── api/\n│   │   ├── deps.py                  # Dependencies (auth, roles)\n│   │   └── routes/\n│   │       ├── __init__.py\n│   │       ├── rt_product.py\n│   │       ├── rt_user.py\n│   │       ├── rt_order.py\n│   │       ├── rt_order_item.py\n│   │       ├── rt_distributor.py\n│   │       ├── auth.py\n│   │       ├── inventory.py\n│   │       └── reports.py\n│   └── scripts/\n│       └── seed.py                  # Seed data\n└── tests/\n    ├── pytest.ini\n    ├── conftest.py\n    └── test_rt_product.py",
               "context": "Estructura de directorios",
@@ -21,9 +105,17 @@
           ]
         },
         {
-          "number": "01.2",
+          "number": "01.4",
           "title": "Separación por Capas",
           "snippets": [
+            {
+              "id": "01-project-architecture-layers-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada capa tiene una responsabilidad única y se comunica con las demás a través de interfaces explícitas (imports). Esto es lo que hace el código mantenible."
+            },
             {
               "id": "01-project-architecture-1",
               "order": 1,
@@ -35,12 +127,20 @@
           ]
         },
         {
-          "number": "01.3",
+          "number": "01.5",
           "title": "Base Declarative para Modelos",
           "snippets": [
             {
+              "id": "01-project-architecture-base-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "SQLAlchemy 2.0 introdujo una nueva forma de declarar modelos usando DeclarativeBase en lugar de la función declarative_base(). Es más limpia, tiene mejor inferencia de tipos y se alinea con el estilo moderno de Python."
+            },
+            {
               "id": "01-project-architecture-2",
-              "order": 2,
+              "order": 1,
               "lang": "python",
               "code": "from sqlalchemy.orm import DeclarativeBase\n\n\nclass Base(DeclarativeBase):\n    pass",
               "context": "Crear la base de modelos",
@@ -49,12 +149,20 @@
           ]
         },
         {
-          "number": "01.4",
+          "number": "01.6",
           "title": "BaseSchema para Pydantic",
           "snippets": [
             {
+              "id": "01-project-architecture-schema-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Pydantic v2 es el motor de validación de FastAPI. Tener un BaseSchema propio permite centralizar configuraciones comunes como la lectura de atributos desde objetos SQLAlchemy."
+            },
+            {
               "id": "01-project-architecture-3",
-              "order": 3,
+              "order": 1,
               "lang": "python",
               "code": "from pydantic import BaseModel, ConfigDict\nfrom datetime import datetime\n\n\nclass BaseSchema(BaseModel):\n    model_config = ConfigDict(from_attributes=True, str_strip_whitespace=True)",
               "context": "Schema base para todas las entidades",
@@ -62,7 +170,7 @@
             },
             {
               "id": "01-project-architecture-4",
-              "order": 4,
+              "order": 2,
               "lang": "python",
               "code": "from . import BaseSchema",
               "context": "Schema base para todas las entidades",
@@ -79,12 +187,34 @@
       "fileOrder": 2,
       "subtopics": [
         {
+          "number": "02.0",
+          "title": "¿Qué instalamos y por qué?",
+          "snippets": [
+            {
+              "id": "02-dependency-installation-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "FastAPI no viene con todo incluido. A diferencia de Django que trae ORM, admin, auth y migraciones, FastAPI es un microframework que se extiende añadiendo las piezas que necesitas. Esto te da flexibilidad total: eliges tu ORM, tu DB, tu auth. Este tema cubre qué instalar y para qué sirve cada dependencia."
+            }
+          ]
+        },
+        {
           "number": "02.1",
           "title": "Crear y Activar Entorno Virtual",
           "snippets": [
             {
-              "id": "02-dependency-installation-0",
+              "id": "02-dependency-installation-venv-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada proyecto Python debe tener su propio entorno virtual. Esto evita conflictos entre versiones de paquetes de distintos proyectos. Es la primera regla del desarrollo Python profesional."
+            },
+            {
+              "id": "02-dependency-installation-0",
+              "order": 1,
               "lang": "bash",
               "code": "# Crear entorno virtual\npython3 -m venv venv\n\n# Activar\nsource venv/bin/activate      # Linux/macOS\n# venv\\Scripts\\activate       # Windows\n\n# Verificar que se activó\nwhich python\n# Debe apuntar a ./venv/bin/python",
               "context": "",
@@ -97,28 +227,36 @@
           "title": "Instalar Dependencias",
           "snippets": [
             {
+              "id": "02-dependency-installation-stacks-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Dependiendo de tu stack (síncrono, asíncrono, qué DB uses), el conjunto de paquetes cambia. Aquí tienes las combinaciones más comunes."
+            },
+            {
               "id": "02-dependency-installation-1",
               "order": 1,
               "lang": "bash",
               "code": "pip install fastapi\npip install \"uvicorn[standard]\"",
               "context": "Instalación básica (FastAPI + servidor)",
-              "description": ""
+              "description": "`uvicorn` es el servidor ASGI que ejecuta FastAPI. El extra `[standard]` incluye características útiles como recarga automática en desarrollo (`--reload`). Sin uvicorn, FastAPI no puede servir HTTP."
             },
             {
               "id": "02-dependency-installation-2",
               "order": 2,
               "lang": "bash",
               "code": "pip install fastapi uvicorn[standard] sqlalchemy psycopg2-binary alembic",
-              "context": "Stack completo",
-              "description": ""
+              "context": "Stack completo con PostgreSQL (síncrono)",
+              "description": "`sqlalchemy` es el ORM. `psycopg2-binary` es el driver de PostgreSQL. `alembic` gestiona migraciones de esquema. Ideal para APIs CRUD tradicionales."
             },
             {
               "id": "02-dependency-installation-3",
               "order": 3,
               "lang": "bash",
               "code": "pip install fastapi uvicorn[standard] sqlalchemy[asyncio] asyncpg aiosqlite alembic",
-              "context": "Stack asíncrono",
-              "description": ""
+              "context": "Stack asíncrono con PostgreSQL",
+              "description": "`sqlalchemy[asyncio]` añade soporte async al ORM. `asyncpg` es el driver async de PostgreSQL (~2x más rápido que psycopg2). `aiosqlite` es útil para desarrollo local con SQLite async."
             },
             {
               "id": "02-dependency-installation-4",
@@ -126,7 +264,7 @@
               "lang": "bash",
               "code": "pip install pydantic-settings",
               "context": "Pydantic Settings (variables de entorno)",
-              "description": ""
+              "description": "Permite cargar .env y definir variables de entorno con tipado y validación Pydantic. Reemplaza a `python-dotenv` con mejor integración de tipos."
             },
             {
               "id": "02-dependency-installation-5",
@@ -134,7 +272,7 @@
               "lang": "bash",
               "code": "pip install python-jose[cryptography] bcrypt",
               "context": "Autenticación",
-              "description": ""
+              "description": "`python-jose` genera y verifica JWT. `[cryptography]` añade algoritmos seguros. `bcrypt` hashea contraseñas. Sin estos, no puedes implementar auth segura."
             },
             {
               "id": "02-dependency-installation-6",
@@ -142,7 +280,7 @@
               "lang": "bash",
               "code": "pip install pytest pytest-asyncio httpx",
               "context": "Testing",
-              "description": ""
+              "description": "`pytest-asyncio` permite testear corrutinas async. `httpx` es el cliente HTTP que usa el `TestClient` de FastAPI para simular peticiones sin servidor real."
             },
             {
               "id": "02-dependency-installation-7",
@@ -150,7 +288,7 @@
               "lang": "bash",
               "code": "pip install boto3",
               "context": "Cliente S3 (para almacenamiento de archivos)",
-              "description": ""
+              "description": "AWS SDK para subir archivos a S3 o compatibles (MinIO, DigitalOcean Spaces). Lo necesitas si tu app maneja uploads de imágenes o documentos."
             },
             {
               "id": "02-dependency-installation-8",
@@ -158,7 +296,7 @@
               "lang": "bash",
               "code": "pip freeze > requirements.txt",
               "context": "Guardar dependencias",
-              "description": ""
+              "description": "Congela las versiones exactas instaladas en el entorno. Esto permite reproducir el mismo entorno en producción o en otras máquinas."
             }
           ]
         }
@@ -171,12 +309,34 @@
       "fileOrder": 3,
       "subtopics": [
         {
+          "number": "03.0",
+          "title": "¿Qué configuraremos?",
+          "snippets": [
+            {
+              "id": "03-application-configuration-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Una API no puede funcionar con valores hardcodeados. La configuración centralizada (variables de entorno, conexión a BD, CORS, routers) es lo que permite que el mismo código funcione en desarrollo, testing y producción sin cambios. Este tema cubre cómo estructurar esa configuración."
+            }
+          ]
+        },
+        {
           "number": "03.1",
           "title": "Archivo .env",
           "snippets": [
             {
-              "id": "03-application-configuration-0",
+              "id": "03-application-configuration-dotenv-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El archivo `.env` contiene todos los valores que cambian entre entornos: credenciales de BD, claves secretas, URLs. Nunca se sube al repositorio (está en `.gitignore`)."
+            },
+            {
+              "id": "03-application-configuration-0",
+              "order": 1,
               "lang": "env",
               "code": "APP_NAME=\"Mi API\"\nADMIN_EMAIL=\"admin@miapi.com\"\nDATABASE_URL=\"postgresql+asyncpg://user:pass@localhost:5432/miapi\"\nDATABASE_RAM_URL=\"sqlite+aiosqlite://\"\nSECRET_KEY=\"supersecretkey123\"\nALGORITHM=\"HS256\"\nACCESS_TOKEN_EXPIRE_MINUTES=30",
               "context": "",
@@ -186,59 +346,105 @@
         },
         {
           "number": "03.2",
+          "title": "Stack Tecnológico",
+          "snippets": [
+            {
+              "id": "03-application-configuration-stack-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada tecnología del stack tiene un rol específico. Esta es la combinación moderna para APIs asíncronas:"
+            },
+            {
+              "id": "03-application-configuration-stack-table",
+              "order": 1,
+              "lang": "text",
+              "code": "FastAPI             → API REST con tipado y validación automática\nSQLAlchemy 2.0+     → ORM asíncrono con Mapped[] y mapped_column()\nPydantic v2         → Validación de datos con BaseModel\nPydantic Settings   → Variables de entorno tipadas con BaseSettings\nPostgreSQL / SQLite → Motor de BD en prod / tests\nAlembic             → Migraciones del esquema\npytest + httpx      → Tests unitarios y de integración\nJWT + bcrypt        → Autenticación segura",
+              "context": "Componentes del Stack",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "number": "03.3",
           "title": "Configuración de la App (main.py)",
           "snippets": [
+            {
+              "id": "03-application-configuration-main-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El punto de entrada `main.py` crea la instancia de FastAPI, configura CORS para comunicación con el frontend y registra todos los routers. Cada router se registra con un `prefix` único (patrón `/router/rt_{entidad}`) y `tags` que agrupan los endpoints en la documentación automática de Swagger (`/docs`)."
+            },
             {
               "id": "03-application-configuration-1",
               "order": 1,
               "lang": "python",
               "code": "from fastapi import FastAPI\nfrom fastapi.middleware.cors import CORSMiddleware\nfrom app.api.routes import rt_product, rt_user, rt_distributor, rt_order, rt_order_item, auth, inventory, reports\nfrom app.core.config import settings\n\napp = FastAPI(\n    title=settings.app_name,\n    description=\"API - Descripción del proyecto\",\n    version=\"1.0.0\"\n)\n\n# Habilitar CORS para desarrollo\napp.add_middleware(\n    CORSMiddleware,\n    allow_origins=[\"*\"],\n    allow_credentials=True,\n    allow_methods=[\"*\"],\n    allow_headers=[\"*\"],\n)\n\n# Registrar routers con prefix y tags\napp.include_router(rt_product.router, prefix=\"/router/rt_products\", tags=[\"products\"])\napp.include_router(rt_user.router, prefix=\"/router/rt_users\", tags=[\"users\"])\napp.include_router(rt_distributor.router, prefix=\"/router/rt_distributors\", tags=[\"distributors\"])\napp.include_router(rt_order.router, prefix=\"/router/rt_orders\", tags=[\"orders\"])\napp.include_router(rt_order_item.router, prefix=\"/router/rt_order_items\", tags=[\"order_items\"])\napp.include_router(auth.router, prefix=\"/api\", tags=[\"auth\"])\napp.include_router(inventory.router, prefix=\"/api\")\napp.include_router(reports.router, prefix=\"/api\")",
               "context": "Crear la instancia de FastAPI",
-              "description": "El punto de entrada define la instancia de FastAPI con metadatos, habilita CORS para comunicación con el frontend y registra todos los routers."
-            }
-          ]
-        },
-        {
-          "number": "03.3",
-          "title": "Configuración con Pydantic Settings",
-          "snippets": [
-            {
-              "id": "03-application-configuration-2",
-              "order": 2,
-              "lang": "python",
-              "code": "from pydantic_settings import BaseSettings, SettingsConfigDict\n\n\nclass Settings(BaseSettings):\n    app_name: str\n    admin_email: str\n    database_url: str\n    database_ram_url: str\n    model_config = SettingsConfigDict(env_file=\".env\", extra=\"forbid\")\n    secret_key: str\n    algorithm: str\n    access_token_expire_minutes: int\n\n    # Cloudflare R2 Configuration (opcional)\n    r2_access_key: str = \"\"\n    r2_secret_key: str = \"\"\n    r2_endpoint: str = \"\"\n    r2_bucket_name: str = \"mi-bucket\"\n    r2_public_url: str = \"\"\n\n\nsettings = Settings()\n\n\ndef get_settings():\n    return settings",
-              "context": "Variables de entorno tipadas",
-              "description": "Las variables de entorno se definen como atributos tipados de una clase `Settings` que hereda de `BaseSettings`. Esto asegura que cualquier variable faltante lance un error en el arranque, no en ejecución."
-            },
-            {
-              "id": "03-application-configuration-3",
-              "order": 3,
-              "lang": "python",
-              "code": "# Desde cualquier parte del proyecto:\nfrom app.core.config import settings\n\nprint(settings.app_name)\nprint(settings.database_url)",
-              "context": "Singleton de Settings",
-              "description": "La instancia `settings = Settings()` se crea una sola vez al importar el módulo. Toda la aplicación accede a la misma configuración sin instanciar repetidamente."
+              "description": ""
             }
           ]
         },
         {
           "number": "03.4",
+          "title": "Configuración con Pydantic Settings",
+          "snippets": [
+            {
+              "id": "03-application-configuration-settings-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Las variables de entorno se definen como atributos tipados de una clase `Settings` que hereda de `BaseSettings`. `extra=\"forbid\"` evita que variables mal escritas pasen desapercibidas. La instancia se crea una sola vez al importar el módulo (patrón singleton)."
+            },
+            {
+              "id": "03-application-configuration-2",
+              "order": 1,
+              "lang": "python",
+              "code": "from pydantic_settings import BaseSettings, SettingsConfigDict\n\n\nclass Settings(BaseSettings):\n    app_name: str\n    admin_email: str\n    database_url: str\n    database_ram_url: str\n    model_config = SettingsConfigDict(env_file=\".env\", extra=\"forbid\")\n    secret_key: str\n    algorithm: str\n    access_token_expire_minutes: int\n\n    # Cloudflare R2 Configuration (opcional)\n    r2_access_key: str = \"\"\n    r2_secret_key: str = \"\"\n    r2_endpoint: str = \"\"\n    r2_bucket_name: str = \"mi-bucket\"\n    r2_public_url: str = \"\"\n\n\nsettings = Settings()\n\n\ndef get_settings():\n    return settings",
+              "context": "Variables de entorno tipadas",
+              "description": ""
+            },
+            {
+              "id": "03-application-configuration-3",
+              "order": 2,
+              "lang": "python",
+              "code": "# Desde cualquier parte del proyecto:\nfrom app.core.config import settings\n\nprint(settings.app_name)\nprint(settings.database_url)",
+              "context": "Singleton de Settings",
+              "description": ""
+            }
+          ]
+        },
+        {
+          "number": "03.5",
           "title": "Conexión Asíncrona a Base de Datos",
           "snippets": [
             {
+              "id": "03-application-configuration-db-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "SQLAlchemy 2.0+ ofrece `create_async_engine` para operaciones asíncronas. Combinado con `async_sessionmaker`, obtenemos sesiones que no bloquean el event loop. `pool_pre_ping=True` verifica que la conexión siga viva antes de usarla. `expire_on_commit=False` evita errores de `DetachedInstanceError` al devolver objetos como respuesta."
+            },
+            {
               "id": "03-application-configuration-4",
-              "order": 4,
+              "order": 1,
               "lang": "python",
               "code": "from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom app.core.config import settings\nfrom app.models.base import Base\n\nSQLALCHEMY_DATABASE_URL = settings.database_url\n\nengine = create_async_engine(\n    SQLALCHEMY_DATABASE_URL,\n    echo=False,\n    pool_pre_ping=True\n)\n\nSessionLocal = async_sessionmaker(\n    bind=engine,\n    autocommit=False,\n    autoflush=False,\n    expire_on_commit=False,\n    class_=AsyncSession\n)\n\n\nasync def get_db():\n    async with SessionLocal() as session:\n        yield session",
               "context": "Crear el engine asíncrono",
-              "description": "SQLAlchemy 2.0+ ofrece `create_async_engine` para operaciones asíncronas. Combinado con `async_sessionmaker`, obtenemos sesiones que no bloquean el event loop."
+              "description": ""
             },
             {
               "id": "03-application-configuration-5",
-              "order": 5,
+              "order": 2,
               "lang": "python",
               "code": "# Uso en un endpoint:\nfrom fastapi import Depends\nfrom sqlalchemy.ext.asyncio import AsyncSession\nfrom app.core.database import get_db\n\n\n@router.get(\"/items\")\nasync def get_items(conex: AsyncSession = Depends(get_db)):\n    # conex está lista para usar\n    # se cierra automáticamente al terminar la petición\n    ...",
               "context": "El generador `get_db`",
-              "description": "La función `get_db` es un **generador asíncrono** que usa `yield` para proporcionar la sesión. FastAPI la usa como dependencia, asegurando que la sesión se cree al iniciar la petición y se cierre automáticamente al finalizar."
+              "description": "`get_db` es un generador asíncrono que usa `yield` para proporcionar la sesión. FastAPI la usa como dependencia, asegurando que la sesión se cree al iniciar la petición y se cierre automáticamente al finalizar."
             }
           ]
         }
@@ -251,16 +457,46 @@
       "fileOrder": 4,
       "subtopics": [
         {
+          "number": "04.0",
+          "title": "Reglas para Definir Modelos",
+          "snippets": [
+            {
+              "id": "04-models-sqlalchemy-rules-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "SQLAlchemy 2.0 introdujo una nueva forma de declarar modelos. Estas son las reglas que todo modelo debe seguir en este proyecto."
+            },
+            {
+              "id": "04-models-sqlalchemy-rules",
+              "order": 1,
+              "lang": "text",
+              "code": "1. Heredan de `Base` (importado de `app/models/base.py`)\n2. `__tablename__` en minúsculas plural\n3. Usa `Mapped[]` y `mapped_column()` (nuevo estilo SQLAlchemy 2.0)\n4. Define Enums en el mismo archivo del modelo (como `str, Enum`)\n5. Usa `TYPE_CHECKING` para imports circulares en relaciones\n6. Relaciones con `back_populates` (bidireccionales)\n7. `cascade=\"all, delete-orphan\"` en relaciones padre → hijo",
+              "context": "Reglas",
+              "description": ""
+            }
+          ]
+        },
+        {
           "number": "04.1",
           "title": "Modelo Básico",
           "snippets": [
+            {
+              "id": "04-models-sqlalchemy-basic-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`Mapped[type]` es la nueva forma de declarar columnas en SQLAlchemy 2.0. Cada columna combina el tipo Python con `mapped_column()` para configuración SQL. `Numeric(10, 2)` es un decimal con 10 dígitos totales y 2 decimales."
+            },
             {
               "id": "04-models-sqlalchemy-0",
               "order": 0,
               "lang": "python",
               "code": "from enum import Enum\nfrom typing import TYPE_CHECKING\n\nfrom sqlalchemy import Boolean, ForeignKey, Numeric, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\nif TYPE_CHECKING:\n    from app.models.md_Distributor import Distributor\n\n\nclass ProductCategory(str, Enum):\n    ELECTRONICS = \"electrónica\"\n    CLOTHING = \"ropa\"\n    FOOD = \"alimentos\"\n    BOOKS = \"libros\"\n    SPORTS = \"deportes\"\n\n\nclass Product(Base):\n    __tablename__ = \"products\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    distributor_id: Mapped[int] = mapped_column(ForeignKey(\"distributors.id\"), nullable=False)\n    name: Mapped[str] = mapped_column(String(150), nullable=False)\n    description: Mapped[str] = mapped_column(String(500), nullable=True)\n    price: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)\n    is_discount: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)\n    stock: Mapped[int] = mapped_column(default=0, nullable=False)\n    category: Mapped[str] = mapped_column(String(50), nullable=False)\n    image_url: Mapped[str] = mapped_column(String(500), nullable=True)\n\n    distributor: Mapped[\"Distributor\"] = relationship(back_populates=\"products\")",
               "context": "Product — modelo con categoría enum y FK",
-              "description": ""
+              "description": "Ejemplo completo de modelo Product con ForeignKey a distribuidor, enum de categoría y relación bidireccional."
             }
           ]
         },
@@ -269,12 +505,20 @@
           "title": "Modelo con Timestamps",
           "snippets": [
             {
+              "id": "04-models-sqlalchemy-timestamps-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`onupdate=datetime.utcnow` actualiza automáticamente el timestamp cada vez que se modifica el registro. `cascade=\"all, delete-orphan\"` elimina los items cuando se elimina la orden padre."
+            },
+            {
               "id": "04-models-sqlalchemy-1",
               "order": 1,
               "lang": "python",
               "code": "from datetime import datetime\nfrom enum import Enum\nfrom typing import TYPE_CHECKING\n\nfrom sqlalchemy import DateTime, ForeignKey, Numeric, String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\nif TYPE_CHECKING:\n    from app.models.md_User import User\n    from app.models.md_OrderItem import OrderItem\n\n\nclass OrderStatus(str, Enum):\n    PENDING = \"pendiente\"\n    SHIPPED = \"enviado\"\n    DELIVERED = \"entregado\"\n\n\nclass Order(Base):\n    __tablename__ = \"orders\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    user_id: Mapped[int] = mapped_column(ForeignKey(\"users.id\"), nullable=False)\n    status: Mapped[str] = mapped_column(String(20), nullable=False, default=OrderStatus.PENDING.value)\n    total_amount: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False, default=0)\n    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)\n    updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)\n\n    user: Mapped[\"User\"] = relationship(back_populates=\"orders\")\n    items: Mapped[list[\"OrderItem\"]] = relationship(back_populates=\"order\", cascade=\"all, delete-orphan\")",
               "context": "Order — modelo con created_at y updated_at",
-              "description": ""
+              "description": "Ejemplo de modelo Order con timestamps y relación uno-a-muchos con OrderItem."
             }
           ]
         },
@@ -283,12 +527,20 @@
           "title": "Modelo con Unique",
           "snippets": [
             {
+              "id": "04-models-sqlalchemy-unique-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`unique=True` crea una restricción de unicidad en la BD. Si intentas insertar un nombre duplicado, SQLAlchemy lanzará un `IntegrityError`."
+            },
+            {
               "id": "04-models-sqlalchemy-2",
               "order": 2,
               "lang": "python",
               "code": "from sqlalchemy import String\nfrom sqlalchemy.orm import Mapped, mapped_column, relationship\n\nfrom app.models.base import Base\n\n\nclass Distributor(Base):\n    __tablename__ = \"distributors\"\n\n    id: Mapped[int] = mapped_column(primary_key=True)\n    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False)\n    contact_email: Mapped[str] = mapped_column(String(100), nullable=True)\n    phone: Mapped[str] = mapped_column(String(20), nullable=True)\n    address: Mapped[str] = mapped_column(String(255), nullable=True)\n    is_active: Mapped[bool] = mapped_column(default=True, nullable=False)\n\n    products: Mapped[list[\"Product\"]] = relationship(back_populates=\"distributor\", cascade=\"all, delete-orphan\")",
               "context": "Distributor — modelo con campo unique",
-              "description": ""
+              "description": "Ejemplo de modelo Distributor con campo `name` único y relación inversa a productos."
             }
           ]
         },
@@ -297,12 +549,20 @@
           "title": "Re-exports de Modelos",
           "snippets": [
             {
+              "id": "04-models-sqlalchemy-reexports-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Centralizar imports permite importar cualquier modelo desde un solo lugar: `from app.models import Product, User`. El `__all__` explicita qué está disponible para herramientas de análisis estático."
+            },
+            {
               "id": "04-models-sqlalchemy-3",
               "order": 3,
               "lang": "python",
               "code": "from app.models.base import Base\nfrom app.models.md_Distributor import Distributor\nfrom app.models.md_Order import Order, OrderStatus\nfrom app.models.md_OrderItem import OrderItem\nfrom app.models.md_Product import Product, ProductCategory\nfrom app.models.md_User import User, UserRole\n\n__all__ = [\n    \"Base\",\n    \"Distributor\",\n    \"Order\",\n    \"OrderItem\",\n    \"OrderStatus\",\n    \"Product\",\n    \"ProductCategory\",\n    \"User\",\n    \"UserRole\",\n]",
               "context": "Centralizar imports en `__init__.py`",
-              "description": ""
+              "description": "Re-exporta todos los modelos desde `app/models/__init__.py` para centralizar imports."
             }
           ]
         }
@@ -315,16 +575,46 @@
       "fileOrder": 5,
       "subtopics": [
         {
+          "number": "05.0",
+          "title": "¿Qué son los Schemas Pydantic?",
+          "snippets": [
+            {
+              "id": "05-schemas-pydantic-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Pydantic v2 es el motor de validación de FastAPI. Cada entidad del proyecto sigue un patrón de 4 clases schema que separa creación, actualización y lectura."
+            }
+          ]
+        },
+        {
           "number": "05.1",
           "title": "Patrón de 4 Clases por Entidad",
           "snippets": [
             {
-              "id": "05-schemas-pydantic-0",
+              "id": "05-schemas-pydantic-fourclasses-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Siempre define estas 4 clases por cada entidad. `ProductBase` define los campos compartidos. `ProductCreate` hereda todo. `ProductUpdate` tiene TODOS los campos como opcionales para permitir PATCH parcial. `ProductRead` agrega el `id` que viene de la BD."
+            },
+            {
+              "id": "05-schemas-pydantic-table",
+              "order": 1,
+              "lang": "text",
+              "code": "| Clase            | Hereda de       | Propósito                          | Tiene ID |\n|------------------|-----------------|------------------------------------|----------|\n| `{Entity}Base`   | `BaseSchema`    | Campos compartidos                 | No       |\n| `{Entity}Create` | `{Entity}Base`  | Creación (sin ID)                  | No       |\n| `{Entity}Update` | `BaseSchema`    | Actualización (todos opcionales)   | No       |\n| `{Entity}Read`   | `{Entity}Base`  | Respuesta (incluye ID)             | Sí       |",
+              "context": "Estructura de schemas",
+              "description": ""
+            },
+            {
+              "id": "05-schemas-pydantic-0",
+              "order": 2,
               "lang": "python",
               "code": "from pydantic import Field\n\nfrom . import BaseSchema\n\n\nclass ProductBase(BaseSchema):\n    name: str = Field(max_length=150)\n    description: str | None = Field(default=None, max_length=500)\n    price: float\n    is_discount: bool = False\n    stock: int = 0\n    category: str = Field(max_length=50)\n    image_url: str | None = Field(default=None, max_length=500)\n\n\nclass ProductCreate(ProductBase):\n    pass\n\n\nclass ProductUpdate(BaseSchema):\n    name: str | None = Field(default=None, max_length=150)\n    description: str | None = Field(default=None, max_length=500)\n    price: float | None = None\n    is_discount: bool | None = None\n    stock: int | None = None\n    category: str | None = Field(default=None, max_length=50)\n    image_url: str | None = Field(default=None, max_length=500)\n\n\nclass ProductRead(ProductBase):\n    id: int",
               "context": "Schema básico",
-              "description": ""
+              "description": "Ejemplo concreto del patrón de 4 clases: ProductBase, ProductCreate, ProductUpdate y ProductRead."
             }
           ]
         },
@@ -333,12 +623,20 @@
           "title": "Schema con Validación Avanzada",
           "snippets": [
             {
+              "id": "05-schemas-pydantic-advanced-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Ejemplo de schemas con validaciones avanzadas: `Field(gt=0)` para cantidad positiva, `Field(pattern=...)` para regex, relaciones anidadas con `UserRead`, y listas validadas."
+            },
+            {
               "id": "05-schemas-pydantic-1",
               "order": 1,
               "lang": "python",
               "code": "from pydantic import Field\nfrom . import BaseSchema\nfrom .user_schema import UserRead\nfrom .order_item_schema import OrderItemRead, OrderItemCheckoutRead\nfrom datetime import datetime\n\n\nclass OrderBase(BaseSchema):\n    user_id: int\n    status: str = \"pendiente\"\n    total_amount: float = 0\n\n\nclass OrderCreate(OrderBase):\n    pass\n\n\nclass OrderItemRequest(BaseSchema):\n    product_id: int\n    quantity: int = Field(gt=0)\n\n\nclass OrderCheckoutRequest(BaseSchema):\n    items: list[OrderItemRequest] = Field(min_length=1)\n\n\nclass OrderUpdate(BaseSchema):\n    user_id: int | None = None\n    status: str | None = None\n    total_amount: float | None = None\n\n\nclass OrderRead(OrderBase):\n    id: int\n    created_at: datetime\n    updated_at: datetime\n    user: UserRead | None = None\n    items: list[OrderItemRead] = []\n\n\nclass PaymentRequest(BaseSchema):\n    payment_method: str = Field(pattern=\"^(paypal|tarjeta)$\")\n    transaction_id: str = Field(min_length=1, max_length=100)",
               "context": "Order — validación regex, relaciones anidadas y listas",
-              "description": ""
+              "description": "Schemas de Order con Field(gt=0) para cantidad, Field(pattern=...) para método de pago, UserRead anidado y listas de OrderItemRead."
             }
           ]
         },
@@ -346,6 +644,14 @@
           "number": "05.3",
           "title": "Schema Update con Todos los Campos Opcionales",
           "snippets": [
+            {
+              "id": "05-schemas-pydantic-update-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El Update schema SIEMPRE tiene todos los campos como `None | None`. En el endpoint PATCH, usamos `model_dump(exclude_unset=True, exclude_none=True)` para obtener solo los campos que el cliente envió."
+            },
             {
               "id": "05-schemas-pydantic-2",
               "order": 2,
@@ -361,12 +667,20 @@
           "title": "BaseSchema y Re-exports",
           "snippets": [
             {
+              "id": "05-schemas-pydantic-baseschema-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`from_attributes=True` permite crear schemas desde objetos SQLAlchemy. `str_strip_whitespace=True` limpia espacios en blanco automáticamente."
+            },
+            {
               "id": "05-schemas-pydantic-3",
               "order": 3,
               "lang": "python",
               "code": "from pydantic import BaseModel, ConfigDict\n\n\nclass BaseSchema(BaseModel):\n    model_config = ConfigDict(from_attributes=True, str_strip_whitespace=True)",
               "context": "Crear BaseSchema",
-              "description": ""
+              "description": "Define un BaseSchema propio con `from_attributes=True` y `str_strip_whitespace=True`."
             },
             {
               "id": "05-schemas-pydantic-4",
@@ -374,7 +688,7 @@
               "lang": "python",
               "code": "from .distributor_schema import (\n    DistributorCreate,\n    DistributorRead,\n    DistributorUpdate,\n)\nfrom .product_schema import (\n    ProductCreate,\n    ProductRead,\n    ProductUpdate,\n)\n# ... etc\n\n__all__ = [\n    \"BaseSchema\",\n    \"DistributorCreate\",\n    \"DistributorRead\",\n    \"DistributorUpdate\",\n    \"ProductCreate\",\n    \"ProductRead\",\n    \"ProductUpdate\",\n    # ... etc\n]",
               "context": "Re-exports en `__init__.py`",
-              "description": ""
+              "description": "Re-exporta todos los schemas desde `app/schemas/__init__.py` para importación centralizada."
             }
           ]
         }
@@ -387,9 +701,31 @@
       "fileOrder": 6,
       "subtopics": [
         {
+          "number": "06.0",
+          "title": "Patrones CRUD",
+          "snippets": [
+            {
+              "id": "06-endpoints-crud-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los endpoints CRUD siguen patrones consistentes en todo el proyecto: convenciones de nombres, estructura try/except, códigos HTTP específicos y manejo de errores. Este tema cubre cada operación."
+            }
+          ]
+        },
+        {
           "number": "06.1",
           "title": "ENDPOINT GET",
           "snippets": [
+            {
+              "id": "06-endpoints-crud-get-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los endpoints GET usan `response_model=list[EntityRead]` para listados y `scalar_one_or_none()` para búsqueda individual. Siempre cargan relaciones con `selectinload`."
+            },
             {
               "id": "06-endpoints-crud-0",
               "order": 0,
@@ -413,6 +749,14 @@
           "title": "ENDPOINT CREATE (POST)",
           "snippets": [
             {
+              "id": "06-endpoints-crud-post-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los endpoints POST usan `status_code=201` y siguen el patrón: dump del schema → crear instancia → add a sesión → commit → refresh → retornar. Para multipart, cada campo se declara individualmente con `Form()` o `File()`."
+            },
+            {
               "id": "06-endpoints-crud-2",
               "order": 2,
               "lang": "python",
@@ -434,6 +778,14 @@
           "number": "06.3",
           "title": "ENDPOINT UPDATE (PATCH)",
           "snippets": [
+            {
+              "id": "06-endpoints-crud-patch-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los endpoints PATCH usan `model_dump(exclude_unset=True, exclude_none=True)` para actualización parcial con schema, o verificaciones `if campo is not None` para multipart."
+            },
             {
               "id": "06-endpoints-crud-4",
               "order": 4,
@@ -457,6 +809,14 @@
           "title": "ENDPOINT DELETE (DELETE)",
           "snippets": [
             {
+              "id": "06-endpoints-crud-delete-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los endpoints DELETE retornan `status_code=204` (sin contenido) y verifican existencia antes de eliminar con `scalar_one_or_none()`."
+            },
+            {
               "id": "06-endpoints-crud-6",
               "order": 6,
               "lang": "python",
@@ -475,44 +835,104 @@
       "fileOrder": 7,
       "subtopics": [
         {
-          "number": "07.1",
-          "title": "Alias de Import",
+          "number": "07.0",
+          "title": "¿Por qué convenciones de nombrado?",
           "snippets": [
             {
-              "id": "07-naming-and-type-hints-0",
+              "id": "07-naming-and-type-hints-intro",
               "order": 0,
-              "lang": "python",
-              "code": "# Modelo → alias tbl_\nfrom app.models.md_Product import Product as tbl_Product\nfrom app.models.md_User import User as tbl_User\nfrom app.models.md_Order import Order as tbl_Order\n\n# Schema → sin alias (se usa el nombre de clase directamente)\nfrom app.schemas.product_schema import ProductCreate, ProductRead, ProductUpdate",
-              "context": "Modelos → alias `tbl_`, Schemas → sin alias",
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "La consistencia en el nombrado es lo que hace un código legible en equipo. Este proyecto sigue convenciones estrictas: prefijos de archivo, alias de import, tipado y nombres de variables."
+            }
+          ]
+        },
+        {
+          "number": "07.1",
+          "title": "Prefijos de Archivos",
+          "snippets": [
+            {
+              "id": "07-naming-and-type-hints-prefixes-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada capa del proyecto usa un prefijo específico para identificar rápidamente el tipo de archivo."
+            },
+            {
+              "id": "07-naming-and-type-hints-prefixes",
+              "order": 1,
+              "lang": "text",
+              "code": "| Tipo      | Prefijo    | Ejemplo                        |\n|-----------|------------|--------------------------------|\n| Rutas     | `rt_`      | `rt_product.py`, `rt_user.py`  |\n| Modelos   | `md_`      | `md_Product.py`, `md_User.py`  |\n| Schemas   | `{entidad}_schema` | `product_schema.py`     |\n| Tests     | `test_rt_` | `test_rt_product.py`           |",
+              "context": "Identificar cada capa por su prefijo",
               "description": ""
             }
           ]
         },
         {
           "number": "07.2",
+          "title": "Alias de Import",
+          "snippets": [
+            {
+              "id": "07-naming-and-type-hints-alias-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El prefijo `tbl_` distingue visualmente los modelos SQLAlchemy de las schemas Pydantic. Como ambos suelen tener nombres similares, el alias evita confusión."
+            },
+            {
+              "id": "07-naming-and-type-hints-0",
+              "order": 1,
+              "lang": "python",
+              "code": "# Modelo → alias tbl_\nfrom app.models.md_Product import Product as tbl_Product\nfrom app.models.md_User import User as tbl_User\nfrom app.models.md_Order import Order as tbl_Order\n\n# Schema → sin alias (se usa el nombre de clase directamente)\nfrom app.schemas.product_schema import ProductCreate, ProductRead, ProductUpdate",
+              "context": "Modelos → alias `tbl_`, Schemas → sin alias",
+              "description": "Los modelos se importan con alias `tbl_`; los schemas se usan con su nombre de clase directamente."
+            }
+          ]
+        },
+        {
+          "number": "07.3",
           "title": "Type Hinting Estricto",
           "snippets": [
+            {
+              "id": "07-naming-and-type-hints-hinting-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Python 3.10+ permite `str | None` en vez de `Optional[str]`. Esta sintaxis es más limpia y es la recomendada por Pydantic v2 y FastAPI."
+            },
             {
               "id": "07-naming-and-type-hints-1",
               "order": 1,
               "lang": "python",
               "code": "# SQLAlchemy — usar Mapped[] SIEMPRE\nid: Mapped[int] = mapped_column(primary_key=True)\nname: Mapped[str] = mapped_column(String(150), nullable=False)\nprice: Mapped[float] = mapped_column(Numeric(10, 2), nullable=False)\nis_discount: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)\n\n# Pydantic — usar | None (Union syntax) y Field()\nname: str = Field(max_length=150)\ndescription: str | None = Field(default=None, max_length=500)\n\n# FastAPI — tipar params de ruta y query\nasync def get_product(product_id: int, conex: AsyncSession = Depends(get_db)):\n\n# Todos los endpoints son async\nasync def create_product(...):",
               "context": "Tipar cada capa correctamente",
-              "description": ""
+              "description": "Convenciones de tipado: Mapped[] para SQLAlchemy, | None para opcionales en Pydantic, y siempre async con tipos explícitos en FastAPI."
             }
           ]
         },
         {
-          "number": "07.3",
+          "number": "07.4",
           "title": "Nombres de Variables",
           "snippets": [
+            {
+              "id": "07-naming-and-type-hints-vars-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "La variable `conex` es una convención del proyecto. En otros proyectos verás `db` o `session`. La clave es la consistencia interna: elige una y úsala siempre."
+            },
             {
               "id": "07-naming-and-type-hints-2",
               "order": 2,
               "lang": "python",
               "code": "conex                     # Sesión de BD (nunca db, nunca session)\nnuevo                     # Instancia creada (nuevo registro)\nproduct / user / order    # Instancia recuperada de BD\ntbl_Product               # Alias del modelo SQLAlchemy\nProductCreate             # Schema de creación\nProductRead               # Schema de respuesta\nProductUpdate             # Schema de actualización\nstmt                      # Statement SQLAlchemy",
               "context": "Convenciones para nombrar variables",
-              "description": ""
+              "description": "Convenciones de nombres: `conex` para sesión, `nuevo` para instancias creadas, `stmt` para statements SQLAlchemy."
             }
           ]
         }
@@ -525,12 +945,34 @@
       "fileOrder": 8,
       "subtopics": [
         {
+          "number": "08.0",
+          "title": "Estructura de Manejo de Errores",
+          "snippets": [
+            {
+              "id": "08-error-handling-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El manejo de errores en FastAPI sigue una estructura consistente de try/except con tres bloques: HTTPException, IntegrityError y Exception genérico. Esto asegura que cada tipo de error tenga el código HTTP adecuado."
+            }
+          ]
+        },
+        {
           "number": "08.1",
           "title": "Estructura de try/except",
           "snippets": [
             {
-              "id": "08-error-handling-0",
+              "id": "08-error-handling-try-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El orden es importante. `HTTPException` se captura primero y se relanza. `IntegrityError` es específico de SQLAlchemy y requiere rollback. `Exception` es el catch-all final."
+            },
+            {
+              "id": "08-error-handling-0",
+              "order": 1,
               "lang": "python",
               "code": "try:\n    # Lógica principal\n    ...\n\nexcept HTTPException:\n    # Re-lanzar excepciones HTTP ya construidas (como 404)\n    raise\n\nexcept IntegrityError as e:\n    # Error de integridad (FK duplicado, unique constraint, etc.)\n    print(f\"Error de request: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_400_BAD_REQUEST,\n        detail=f\"Error al crear entidad: {str(e)}\"\n    )\n\nexcept Exception as e:\n    # Cualquier otro error inesperado\n    print(f\"Error con el server: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,\n        detail=f\"Error inesperado al crear entidad: {str(e)}\"\n    )",
               "context": "Los 3 bloques de captura",
@@ -540,43 +982,89 @@
         },
         {
           "number": "08.2",
-          "title": "Manejo de No Encontrado (404)",
+          "title": "Códigos de Estado HTTP",
           "snippets": [
             {
-              "id": "08-error-handling-1",
+              "id": "08-error-handling-status-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada operación CRUD tiene un código HTTP específico. Usa siempre las constantes de `status` en lugar de números hardcodeados."
+            },
+            {
+              "id": "08-error-handling-status-codes",
               "order": 1,
-              "lang": "python",
-              "code": "result = await conex.execute(stmt)\nentidad = result.scalar_one_or_none()\nif not entidad:\n    raise HTTPException(\n        status_code=status.HTTP_404_NOT_FOUND,\n        detail=\"Entidad no encontrada\"\n    )",
-              "context": "Patrón scalar_one_or_none",
+              "lang": "text",
+              "code": "| Código | Constante                            | Uso                                       |\n|--------|--------------------------------------|-------------------------------------------|\n| 200    | `status.HTTP_200_OK`                 | Éxito GET/PATCH                           |\n| 201    | `status.HTTP_201_CREATED`            | Éxito POST                                |\n| 204    | `status.HTTP_204_NO_CONTENT`         | Éxito DELETE                              |\n| 400    | `status.HTTP_400_BAD_REQUEST`        | Error de negocio, IntegrityError         |\n| 401    | `status.HTTP_401_UNAUTHORIZED`       | Credenciales inválidas                    |\n| 403    | `status.HTTP_403_FORBIDDEN`          | Permisos insuficientes                    |\n| 404    | `status.HTTP_404_NOT_FOUND`          | Recurso no encontrado                     |\n| 422    | (automático de Pydantic)             | Validación de schema fallida              |\n| 500    | `status.HTTP_500_INTERNAL_SERVER_ERROR` | Error inesperado del servidor          |",
+              "context": "Cuándo usar cada código",
               "description": ""
             }
           ]
         },
         {
           "number": "08.3",
+          "title": "Manejo de No Encontrado (404)",
+          "snippets": [
+            {
+              "id": "08-error-handling-notfound-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`scalar_one_or_none()` es el método estándar para búsquedas por ID o filtros únicos. Si esperas múltiples resultados, usa `scalars().all()`."
+            },
+            {
+              "id": "08-error-handling-1",
+              "order": 1,
+              "lang": "python",
+              "code": "result = await conex.execute(stmt)\nentidad = result.scalar_one_or_none()\nif not entidad:\n    raise HTTPException(\n        status_code=status.HTTP_404_NOT_FOUND,\n        detail=\"Entidad no encontrada\"\n    )",
+              "context": "Patrón scalar_one_or_none",
+              "description": "Patrón estándar para verificar existencia de una entidad antes de operar sobre ella."
+            }
+          ]
+        },
+        {
+          "number": "08.4",
           "title": "Manejo de IntegrityError",
           "snippets": [
+            {
+              "id": "08-error-handling-integrity-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Siempre haz `await conex.rollback()` antes de lanzar la excepción HTTP. Si no haces rollback, la sesión queda en estado 'muerto' y no puede reutilizarse."
+            },
             {
               "id": "08-error-handling-2",
               "order": 2,
               "lang": "python",
               "code": "except IntegrityError as e:\n    print(f\"Error de request: {e}\")\n    await conex.rollback()\n    raise HTTPException(\n        status_code=status.HTTP_400_BAD_REQUEST,\n        detail=f\"Error al crear entidad: {str(e)}\"\n    )",
               "context": "Rollback obligatorio antes de responder",
-              "description": ""
+              "description": "Captura IntegrityError para violaciones de unique constraint o FK, hace rollback y retorna 400."
             }
           ]
         },
         {
-          "number": "08.4",
+          "number": "08.5",
           "title": "Logging en Desarrollo",
           "snippets": [
+            {
+              "id": "08-error-handling-logging-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "En desarrollo, `print()` es suficiente. Para producción, deberías usar `logging` o un servicio como Sentry."
+            },
             {
               "id": "08-error-handling-3",
               "order": 3,
               "lang": "python",
               "code": "print(f\"Error: {e}\")\nprint(f\"Error con el server: {e}\")\nprint(f\"Error de request: {e}\")",
               "context": "Usar print() para desarrollo",
-              "description": ""
+              "description": "Tres tipos de mensajes para identificar rápidamente el origen del error en consola."
             }
           ]
         }
@@ -589,16 +1077,38 @@
       "fileOrder": 9,
       "subtopics": [
         {
+          "number": "09.0",
+          "title": "¿Por qué testear?",
+          "snippets": [
+            {
+              "id": "09-testing-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los tests aseguran que la API funciona correctamente antes de desplegar. Usamos pytest con SQLite en RAM para ejecutar tests rápidos y aislados que no dependen de PostgreSQL."
+            }
+          ]
+        },
+        {
           "number": "09.1",
           "title": "Configuración de pytest",
           "snippets": [
             {
-              "id": "09-testing-0",
+              "id": "09-testing-pytest-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`asyncio_mode = auto` permite que las funciones `async` de test se ejecuten automáticamente. Aunque por claridad se sigue usando `@pytest.mark.asyncio`."
+            },
+            {
+              "id": "09-testing-0",
+              "order": 1,
               "lang": "ini",
               "code": "[pytest]\npythonpath = .\nenv_files = .env\nasyncio_mode = auto",
               "context": "pytest.ini",
-              "description": ""
+              "description": "Configuración básica de pytest con asyncio_mode auto y variables de entorno."
             }
           ]
         },
@@ -606,6 +1116,14 @@
           "number": "09.2",
           "title": "Base de Datos en RAM para Tests",
           "snippets": [
+            {
+              "id": "09-testing-ram-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Usar SQLite en RAM (`aiosqlite`) permite ejecutar tests sin depender de PostgreSQL. La URL se configura en `settings.database_ram_url` como `sqlite+aiosqlite://`."
+            },
             {
               "id": "09-testing-1",
               "order": 1,
@@ -621,12 +1139,28 @@
           "title": "Fixtures",
           "snippets": [
             {
+              "id": "09-testing-fixtures-setup-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`autouse=True` hace que el fixture se ejecute automáticamente para cada test. Crea datos de prueba básicos (usuario, distribuidor) que los tests pueden usar."
+            },
+            {
               "id": "09-testing-2",
               "order": 2,
               "lang": "python",
               "code": "@pytest.fixture(autouse=True)\nasync def setup_database():\n    async with engine_test.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    # Crear datos de prueba\n    async with TestingSessionLocal() as session:\n        test_user = User(\n            name=\"Test User\",\n            email=\"test@user.com\",\n            password_hash=get_password_hash(\"testpass123\"),\n            role=\"vendedor\"\n        )\n        session.add(test_user)\n\n        test_distributor = Distributor(\n            name=\"Test Distributor\",\n            contact_email=\"test@distributor.com\",\n            phone=\"1234567890\",\n            address=\"Test Address\",\n            is_active=True\n        )\n        session.add(test_distributor)\n\n        await session.commit()\n\n    yield\n\n    async with engine_test.begin() as conn:\n        await conn.run_sync(Base.metadata.drop_all)",
               "context": "setup_database (autouse)",
               "description": "Crea y destruye tablas automáticamente para cada sesión de test."
+            },
+            {
+              "id": "09-testing-fixtures-overrides-intro",
+              "order": 1,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`app.dependency_overrides` es el mecanismo de FastAPI para reemplazar dependencias en tests. `ASGITransport(app=app)` permite testear sin servidor HTTP real."
             },
             {
               "id": "09-testing-3",
@@ -643,12 +1177,20 @@
           "title": "Tests CRUD",
           "snippets": [
             {
+              "id": "09-testing-crud-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada test sigue el patrón Arrange (preparar datos) → Act (ejecutar) → Assert (verificar)."
+            },
+            {
               "id": "09-testing-4",
               "order": 4,
               "lang": "python",
               "code": "import pytest\nfrom httpx import AsyncClient\n\n\n@pytest.mark.asyncio\nasync def test_create_product_success(client: AsyncClient, test_distributor):\n    \"\"\"Test creating a product successfully.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"description\": \"Test description\",\n        \"price\": \"99.99\",\n        \"stock\": \"10\",\n        \"category\": \"electrónica\",\n        \"distributor_id\": str(test_distributor.id)\n    }\n\n    response = await client.post(\"/router/rt_products/\", data=product_data)\n\n    assert response.status_code == 201\n    data = response.json()\n    assert data[\"name\"] == \"Test Product\"\n    assert data[\"description\"] == \"Test description\"\n    assert float(data[\"price\"]) == 99.99\n    assert data[\"stock\"] == 10\n    assert data[\"category\"] == \"electrónica\"\n    assert \"id\" in data\n\n\n@pytest.mark.asyncio\nasync def test_create_product_missing_required_fields(client: AsyncClient, test_distributor):\n    \"\"\"Test creating product without required fields.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"price\": \"99.99\"\n    }\n\n    response = await client.post(\"/router/rt_products/\", data=product_data)\n\n    assert response.status_code == 422",
               "context": "CREATE",
-              "description": ""
+              "description": "Test de creación exitosa y validación de campos requeridos (respuesta 422)."
             },
             {
               "id": "09-testing-5",
@@ -656,7 +1198,7 @@
               "lang": "python",
               "code": "@pytest.mark.asyncio\nasync def test_read_products(client: AsyncClient):\n    \"\"\"Test reading all products.\"\"\"\n    response = await client.get(\"/router/rt_products/\")\n    assert response.status_code == 200\n    data = response.json()\n    assert isinstance(data, list)\n\n\n@pytest.mark.asyncio\nasync def test_read_product_not_found(client: AsyncClient):\n    \"\"\"Test reading a non-existent product returns 404.\"\"\"\n    response = await client.get(\"/router/rt_products/999\")\n    assert response.status_code == 404\n\n\n@pytest.mark.asyncio\nasync def test_update_product(client: AsyncClient, test_distributor):\n    \"\"\"Test updating a product.\"\"\"\n    product_data = {\n        \"name\": \"Test Product\",\n        \"description\": \"Test description\",\n        \"price\": \"99.99\",\n        \"stock\": \"10\",\n        \"category\": \"electrónica\",\n        \"distributor_id\": str(test_distributor.id)\n    }\n    response = await client.patch(\"/router/rt_products/1\", data=product_data)\n    assert response.status_code == 200\n    data = response.json()\n    assert data[\"name\"] == \"Test Product\"\n\n\n@pytest.mark.asyncio\nasync def test_delete_product(client: AsyncClient):\n    \"\"\"Test deleting a product.\"\"\"\n    response = await client.delete(\"/router/rt_products/1\")\n    assert response.status_code == 204\n\n\n@pytest.mark.asyncio\nasync def test_delete_product_not_found(client: AsyncClient):\n    \"\"\"Test deleting a non-existent product returns 404.\"\"\"\n    response = await client.delete(\"/router/rt_products/999\")\n    assert response.status_code == 404",
               "context": "READ, UPDATE, DELETE",
-              "description": ""
+              "description": "Tests de listado, lectura individual, actualización y eliminación con verificación de códigos HTTP."
             }
           ]
         }
@@ -669,16 +1211,38 @@
       "fileOrder": 10,
       "subtopics": [
         {
+          "number": "10.0",
+          "title": "Flujo de Seguridad",
+          "snippets": [
+            {
+              "id": "10-security-and-auth-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "La seguridad en FastAPI se implementa mediante dependencias. El flujo es: el cliente envía un token JWT, la dependencia `get_current_user` lo valida y busca el usuario, y las dependencias de rol verifican permisos."
+            }
+          ]
+        },
+        {
           "number": "10.1",
           "title": "Dependencias de Seguridad",
           "snippets": [
             {
-              "id": "10-security-and-auth-0",
+              "id": "10-security-and-auth-deps-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Las dependencias se encadenan. El orden es: `get_current_user` → verificar token → buscar usuario en BD. Luego, las funciones de rol (`get_current_admin`, `get_current_seller`) validan el rol del usuario."
+            },
+            {
+              "id": "10-security-and-auth-0",
+              "order": 1,
               "lang": "python",
               "code": "from datetime import datetime, timedelta\nfrom typing import Any\n\nfrom jose import JWTError, jwt\nfrom passlib.context import CryptContext\nfrom fastapi import Depends, HTTPException, status\nfrom fastapi.security import OAuth2PasswordBearer\nfrom sqlalchemy import select\nfrom sqlalchemy.ext.asyncio import AsyncSession\n\nfrom app.core.config import settings\nfrom app.core.database import get_db\nfrom app.models import User, UserRole\n\n\npwd_context = CryptContext(schemes=[\"bcrypt\"], deprecated=\"auto\")\noauth2_scheme = OAuth2PasswordBearer(tokenUrl=\"/api/login\")\n\n\ndef get_password_hash(password: str) -> str:\n    return pwd_context.hash(password)\n\n\ndef verify_password(plain_password: str, hashed_password: str) -> bool:\n    return pwd_context.verify(plain_password, hashed_password)\n\n\ndef create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:\n    to_encode = data.copy()\n    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=settings.access_token_expire_minutes))\n    to_encode.update({\"exp\": expire})\n    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)",
               "context": "Funciones de seguridad",
-              "description": ""
+              "description": "Funciones helper: hash de contraseñas con bcrypt, verificación y creación de JWT con expiración configurable."
             }
           ]
         },
@@ -687,12 +1251,20 @@
           "title": "JWT + bcrypt",
           "snippets": [
             {
+              "id": "10-security-and-auth-jwt-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`bcrypt.checkpw()` compara contraseña plana vs hash. `jwt.encode()` crea el token con expiración configurable. El `TokenData` es un modelo Pydantic que tipa la información del token."
+            },
+            {
               "id": "10-security-and-auth-1",
               "order": 1,
               "lang": "python",
               "code": "async def get_current_user(\n    token: str = Depends(oauth2_scheme),\n    conex: AsyncSession = Depends(get_db)\n):\n    \"\"\"\n    Dependencia que extrae y valida el usuario desde el token JWT.\n    \"\"\"\n    credentials_exception = HTTPException(\n        status_code=status.HTTP_401_UNAUTHORIZED,\n        detail=\"No se pudieron validar las credenciales\",\n        headers={\"WWW-Authenticate\": \"Bearer\"},\n    )\n    try:\n        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])\n        user_id: int = payload.get(\"sub\")\n        if user_id is None:\n            raise credentials_exception\n    except JWTError:\n        raise credentials_exception\n\n    stmt = select(User).where(User.id == user_id)\n    result = await conex.execute(stmt)\n    user = result.scalar_one_or_none()\n    if user is None:\n        raise credentials_exception\n    return user\n\n\nasync def get_current_seller(current_user: User = Depends(get_current_user)):\n    if current_user.role not in (UserRole.SELLER, UserRole.ADMIN):\n        raise HTTPException(\n            status_code=status.HTTP_403_FORBIDDEN,\n            detail=\"Se requieren permisos de vendedor o administrador\"\n        )\n    return current_user\n\n\nasync def get_current_admin(current_user: User = Depends(get_current_user)):\n    if current_user.role != UserRole.ADMIN:\n        raise HTTPException(\n            status_code=status.HTTP_403_FORBIDDEN,\n            detail=\"Se requieren permisos de administrador\"\n        )\n    return current_user",
               "context": "Dependencias de autenticación y roles",
-              "description": ""
+              "description": "get_current_user valida el JWT y busca el usuario. get_current_seller y get_current_admin son guardas de rol que retornan 403 si no corresponden."
             }
           ]
         },
@@ -701,12 +1273,20 @@
           "title": "Endpoint de Login",
           "snippets": [
             {
+              "id": "10-security-and-auth-login-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El endpoint de login recibe credenciales via `OAuth2PasswordRequestForm`, verifica email y contraseña, y retorna un JWT. Usa el `tokenUrl` configurado en `OAuth2PasswordBearer`."
+            },
+            {
               "id": "10-security-and-auth-2",
               "order": 2,
               "lang": "python",
               "code": "@router.post(\"/login\")\nasync def login(form_data: OAuth2PasswordRequestForm = Depends(), conex: AsyncSession = Depends(get_db)):\n    stmt = select(User).where(User.email == form_data.username)\n    result = await conex.execute(stmt)\n    user = result.scalar_one_or_none()\n\n    if not user or not verify_password(form_data.password, user.password_hash):\n        raise HTTPException(\n            status_code=status.HTTP_401_UNAUTHORIZED,\n            detail=\"Credenciales incorrectas\",\n            headers={\"WWW-Authenticate\": \"Bearer\"},\n        )\n\n    access_token = create_access_token(\n        data={\"sub\": user.id},\n        expires_delta=timedelta(minutes=settings.access_token_expire_minutes)\n    )\n    return {\"access_token\": access_token, \"token_type\": \"bearer\"}",
               "context": "Login con OAuth2PasswordRequestForm",
-              "description": ""
+              "description": "Endpoint de login: recibe email y password, verifica credenciales, retorna JWT."
             }
           ]
         },
@@ -715,12 +1295,20 @@
           "title": "Rutas Protegidas",
           "snippets": [
             {
+              "id": "10-security-and-auth-protected-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "La dependencia de seguridad se inyecta como parámetro del endpoint. FastAPI ejecuta la cadena de dependencias automáticamente. Si el rol no es válido, retorna 403."
+            },
+            {
               "id": "10-security-and-auth-3",
               "order": 3,
               "lang": "python",
               "code": "@router.get(\"/profile\", response_model=UserRead)\nasync def get_profile(current_user: User = Depends(get_current_user)):\n    return current_user\n\n\n@router.post(\"/admin/products\", response_model=ProductRead)\nasync def admin_create_product(\n    product_data: ProductCreate,\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_seller)\n):\n    ...\n\n\n@router.delete(\"/users/{user_id}\")\nasync def delete_user(\n    user_id: int,\n    conex: AsyncSession = Depends(get_db),\n    current_user: User = Depends(get_current_admin)\n):\n    ...",
               "context": "Protección por roles",
-              "description": ""
+              "description": "Ejemplos: perfil público con get_current_user, creación con get_current_seller, eliminación con get_current_admin."
             }
           ]
         }
@@ -733,32 +1321,54 @@
       "fileOrder": 11,
       "subtopics": [
         {
+          "number": "11.0",
+          "title": "SQLAlchemy 2.0 Queries",
+          "snippets": [
+            {
+              "id": "11-queries-and-eager-loading-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "SQLAlchemy 2.0 ofrece una API moderna para consultas. `select()` reemplaza a la vieja API de `Query`. Las consultas asíncronas se ejecutan con `await conex.execute()`."
+            }
+          ]
+        },
+        {
           "number": "11.1",
           "title": "Query Básica",
           "snippets": [
             {
-              "id": "11-queries-and-eager-loading-0",
+              "id": "11-queries-and-eager-loading-basic-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`select()` es la función principal para crear consultas. `execute()` ejecuta en la sesión asíncrona. `scalar_one_or_none()` retorna un objeto o None."
+            },
+            {
+              "id": "11-queries-and-eager-loading-0",
+              "order": 1,
               "lang": "python",
               "code": "from sqlalchemy import select\nfrom app.models import Product as tbl_Product\n\nstmt = select(tbl_Product)\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()",
               "context": "SELECT *",
-              "description": ""
+              "description": "Obtiene todos los registros de la tabla usando `select()` y `scalars().all()`."
             },
             {
               "id": "11-queries-and-eager-loading-1",
-              "order": 1,
+              "order": 2,
               "lang": "python",
               "code": "stmt = select(tbl_Product).where(tbl_Product.id == product_id)\nresult = await conex.execute(stmt)\nproduct = result.scalar_one_or_none()",
               "context": "SELECT por ID",
-              "description": ""
+              "description": "Filtra por ID con `.where()` y retorna un solo registro o None."
             },
             {
               "id": "11-queries-and-eager-loading-2",
-              "order": 2,
+              "order": 3,
               "lang": "python",
               "code": "stmt = select(tbl_Product).where(tbl_Product.category == \"electrónica\").limit(10)\nresult = await conex.execute(stmt)\nproducts = result.scalars().all()",
               "context": "Filtros y límites",
-              "description": ""
+              "description": "Combina filtros con `.where()` y límite con `.limit()` para consultas acotadas."
             }
           ]
         },
@@ -766,6 +1376,14 @@
           "number": "11.2",
           "title": "Eager Loading",
           "snippets": [
+            {
+              "id": "11-queries-and-eager-loading-eager-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`selectinload()` ejecuta una consulta adicional separada. `joinedload()` usa JOIN de SQL. `selectinload` es la opción más segura y recomendada para la mayoría de casos."
+            },
             {
               "id": "11-queries-and-eager-loading-3",
               "order": 3,
@@ -789,12 +1407,20 @@
           "title": "Agregaciones",
           "snippets": [
             {
+              "id": "11-queries-and-eager-loading-agg-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "`func.sum()` es la función de agregación de SQLAlchemy. `label()` asigna nombre a columna calculada. `.all()` retorna lista de filas (tuplas)."
+            },
+            {
               "id": "11-queries-and-eager-loading-5",
               "order": 5,
               "lang": "python",
               "code": "from sqlalchemy import func\n\n# Conteo total\nstmt = select(func.count()).select_from(tbl_Product)\nresult = await conex.execute(stmt)\ntotal = result.scalar()\n\n# Suma\nstmt = select(func.sum(tbl_Product.price)).where(tbl_Product.category == \"electrónica\")\nresult = await conex.execute(stmt)\ntotal_price = result.scalar()\n\n# Group by\nstmt = select(\n    tbl_Product.category,\n    func.count().label(\"cantidad\"),\n    func.sum(tbl_Product.price).label(\"total\")\n).group_by(tbl_Product.category)\nresult = await conex.execute(stmt)\nstats = result.all()",
               "context": "COUNT, SUM, GROUP BY",
-              "description": ""
+              "description": "Consultas de agregación: COUNT total, SUM por categoría y GROUP BY con label para nombres legibles."
             }
           ]
         }
@@ -807,16 +1433,46 @@
       "fileOrder": 12,
       "subtopics": [
         {
+          "number": "12.0",
+          "title": "¿Cómo manejamos archivos?",
+          "snippets": [
+            {
+              "id": "12-file-storage-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Las imágenes y archivos se almacenan en Cloudflare R2 (compatible con S3). El servicio `storage_service` abstrae la subida y eliminación, con validaciones automáticas de tipo MIME y tamaño."
+            }
+          ]
+        },
+        {
           "number": "12.1",
           "title": "Servicio de Storage",
           "snippets": [
             {
-              "id": "12-file-storage-0",
+              "id": "12-file-storage-service-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "El servicio `storage_service` maneja automáticamente: validación de tipo MIME (solo imágenes), validación de tamaño (máximo 5MB), generación de nombre único con UUID."
+            },
+            {
+              "id": "12-file-storage-pattern",
+              "order": 1,
+              "lang": "text",
+              "code": "from app.core.storage import storage_service\n\n# Subir imagen\nimage_url = await storage_service.upload_image(image)\n\n# Eliminar imagen\nawait storage_service.delete_image(image_url)",
+              "context": "Patrón de uso",
+              "description": "El servicio se encarga de la validación y generación de nombres únicos. Solo necesitas llamar a upload y pasar el archivo."
+            },
+            {
+              "id": "12-file-storage-0",
+              "order": 2,
               "lang": "python",
               "code": "import boto3\nfrom botocore.config import Config\nfrom app.core.config import settings\n\ns3_client = boto3.client(\n    \"s3\",\n    aws_access_key_id=settings.r2_access_key,\n    aws_secret_access_key=settings.r2_secret_key,\n    endpoint_url=settings.r2_endpoint,\n    config=Config(signature_version=\"s3v4\")\n)\n\n\nasync def upload_image(file) -> str:\n    \"\"\"Sube una imagen a Cloudflare R2 y devuelve la URL pública.\"\"\"\n    from uuid import uuid4\n    from datetime import datetime\n\n    ext = file.filename.split(\".\")[-1] if file.filename else \"png\"\n    key = f\"products/{datetime.utcnow().strftime('%Y%m%d')}/{uuid4()}.{ext}\"\n\n    s3_client.upload_fileobj(\n        file.file,\n        settings.r2_bucket_name,\n        key,\n        ExtraArgs={\"ContentType\": file.content_type}\n    )\n\n    return f\"{settings.r2_public_url}/{key}\"\n\n\nasync def delete_image(image_url: str):\n    \"\"\"Elimina una imagen de Cloudflare R2.\"\"\"\n    key = image_url.replace(f\"{settings.r2_public_url}/\", \"\")\n    s3_client.delete_object(Bucket=settings.r2_bucket_name, Key=key)",
               "context": "Cloudflare R2",
-              "description": ""
+              "description": "Implementación del cliente S3 con boto3 apuntando a Cloudflare R2."
             }
           ]
         }
@@ -829,16 +1485,46 @@
       "fileOrder": 13,
       "subtopics": [
         {
+          "number": "13.0",
+          "title": "¿Qué son los scripts de seed?",
+          "snippets": [
+            {
+              "id": "13-seed-data-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Los scripts de seed permiten poblar la base de datos con datos iniciales para desarrollo. Se ejecutan con `python app/scripts/seed.py`."
+            }
+          ]
+        },
+        {
           "number": "13.1",
           "title": "Script de Seed",
           "snippets": [
             {
-              "id": "13-seed-data-0",
+              "id": "13-seed-data-script-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Siempre verifica si el registro ya existe antes de insertarlo. Esto permite ejecutar el seed múltiples veces sin errores de duplicados."
+            },
+            {
+              "id": "13-seed-data-0",
+              "order": 1,
               "lang": "python",
               "code": "import asyncio\nfrom sqlalchemy import select\nfrom app.core.database import SessionLocal, engine, Base\nfrom app.models import Product, ProductCategory, User, UserRole, Distributor, Order, OrderStatus, OrderItem\nfrom app.core.security import get_password_hash\n\n\nasync def seed():\n    async with engine.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    async with SessionLocal() as session:\n        # Crear usuario admin\n        admin = User(\n            name=\"Admin\",\n            email=\"admin@admin.com\",\n            password_hash=get_password_hash(\"12345678\"),\n            role=UserRole.ADMIN\n        )\n        session.add(admin)\n\n        # Crear distribuidores\n        dist = Distributor(\n            name=\"Distribuidora Central\",\n            contact_email=\"contacto@distcentral.com\",\n            phone=\"555-0100\",\n            address=\"Av. Principal 123\"\n        )\n        session.add(dist)\n        await session.flush()\n\n        # Crear productos\n        productos = [\n            Product(name=\"Laptop Gamer\", price=15000.00, category=ProductCategory.ELECTRONICS.value, stock=10, distributor_id=dist.id),\n            Product(name=\"Mouse Inalámbrico\", price=350.00, category=ProductCategory.ELECTRONICS.value, stock=50, distributor_id=dist.id),\n            Product(name=\"Camiseta Algodón\", price=250.00, category=ProductCategory.CLOTHING.value, stock=100, distributor_id=dist.id),\n        ]\n        session.add_all(productos)\n        await session.flush()\n\n        await session.commit()\n        print(\"Seed completado exitosamente\")\n\n\nif __name__ == \"__main__\":\n    asyncio.run(seed())",
               "context": "Seed básico con datos de prueba",
-              "description": ""
+              "description": "Función seed con datos de ejemplo: admin, distribuidor y productos."
+            },
+            {
+              "id": "13-seed-data-main",
+              "order": 2,
+              "lang": "python",
+              "code": "async def main():\n    async with engine.begin() as conn:\n        await conn.run_sync(Base.metadata.create_all)\n\n    async with SessionLocal() as conex:\n        try:\n            await seed_users(conex)\n            await seed_distributors(conex)\n            await seed_products(conex)\n        except Exception as e:\n            await conex.rollback()\n            raise\n\nif __name__ == \"__main__\":\n    asyncio.run(main())",
+              "context": "Punto de entrada principal",
+              "description": "Estructura del punto de entrada: crea tablas, ejecuta seeds por entidad con try/except y rollback en caso de error."
             }
           ]
         }
@@ -851,16 +1537,38 @@
       "fileOrder": 14,
       "subtopics": [
         {
+          "number": "14.0",
+          "title": "¿Cómo usar esta checklist?",
+          "snippets": [
+            {
+              "id": "14-implementation-checklist-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Esta checklist resume todos los pasos necesarios para crear un nuevo módulo completo en el proyecto. Sigue este orden para no saltarte nada."
+            }
+          ]
+        },
+        {
           "number": "14.1",
           "title": "Pasos para Crear un Nuevo Módulo",
           "snippets": [
             {
-              "id": "14-implementation-checklist-0",
+              "id": "14-implementation-checklist-steps-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Ejemplo: agregar una nueva entidad 'Category' al sistema."
+            },
+            {
+              "id": "14-implementation-checklist-0",
+              "order": 1,
               "lang": "text",
               "code": "Ejemplo: nueva entidad \"Category\"\n\n[ ] Crear app/models/md_Category.py con Base, Mapped[], __tablename__\n[ ] Si aplica, definir Enum en el mismo archivo\n[ ] Si tiene relaciones, usar TYPE_CHECKING y back_populates\n[ ] Agregar from app.models.md_Category import Category en app/models/__init__.py\n[ ] Crear app/schemas/category_schema.py con CategoryBase, CategoryCreate, CategoryUpdate, CategoryRead\n[ ] Agregar re-exports en app/schemas/__init__.py\n[ ] Crear app/api/routes/rt_category.py con APIRouter() y CRUD completo\n[ ] Registrar en main.py\n[ ] Agregar protección con Depends(get_current_seller) o Depends(get_current_admin)\n[ ] Crear migración Alembic\n[ ] Crear tests/test_rt_category.py\n[ ] Si aplica, agregar seed data en app/scripts/seed.py",
               "context": "",
-              "description": ""
+              "description": "Orden recomendado: modelo → schema → rutas → registro → tests → seed. Cada paso depende del anterior."
             }
           ]
         }
@@ -873,12 +1581,34 @@
       "fileOrder": 15,
       "subtopics": [
         {
+          "number": "15.0",
+          "title": "Referencia Rápida de Enums",
+          "snippets": [
+            {
+              "id": "15-enums-reference-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Referencia rápida de todos los Enums usados en los modelos del proyecto."
+            }
+          ]
+        },
+        {
           "number": "15.1",
           "title": "Enums por Entidad",
           "snippets": [
             {
-              "id": "15-enums-reference-0",
+              "id": "15-enums-reference-entity-intro",
               "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Cada enum define valores en español que se almacenan en la BD como strings legibles."
+            },
+            {
+              "id": "15-enums-reference-0",
+              "order": 1,
               "lang": "python",
               "code": "class ProductCategory(str, Enum):\n    ELECTRONICS = \"electrónica\"\n    CLOTHING = \"ropa\"\n    FOOD = \"alimentos\"\n    BOOKS = \"libros\"\n    SPORTS = \"deportes\"",
               "context": "ProductCategory",
@@ -886,7 +1616,7 @@
             },
             {
               "id": "15-enums-reference-1",
-              "order": 1,
+              "order": 2,
               "lang": "python",
               "code": "class UserRole(str, Enum):\n    ADMIN = \"administrador\"\n    SELLER = \"vendedor\"\n    CLIENT = \"cliente\"",
               "context": "UserRole",
@@ -894,7 +1624,7 @@
             },
             {
               "id": "15-enums-reference-2",
-              "order": 2,
+              "order": 3,
               "lang": "python",
               "code": "class OrderStatus(str, Enum):\n    PENDING = \"pendiente\"\n    SHIPPED = \"enviado\"\n    DELIVERED = \"entregado\"",
               "context": "OrderStatus",
@@ -907,12 +1637,20 @@
           "title": "Reglas para Definir Enums",
           "snippets": [
             {
+              "id": "15-enums-reference-rules-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Todos los Enums heredan de `str` y `Enum` para que los valores sean strings compatibles con la BD."
+            },
+            {
               "id": "15-enums-reference-3",
               "order": 3,
               "lang": "python",
               "code": "class MiEnum(str, Enum):\n    VALOR_1 = \"valor en español\"\n    VALOR_2 = \"otro valor\"",
               "context": "Siempre como clase str + Enum",
-              "description": ""
+              "description": "Heredar de `str` y `Enum` permite usar los valores como strings directamente en la BD y en las validaciones de Pydantic."
             },
             {
               "id": "15-enums-reference-4",
@@ -920,7 +1658,29 @@
               "lang": "python",
               "code": "from app.models.md_User import User, UserRole\nfrom app.models.md_Order import Order, OrderStatus",
               "context": "Re-exportar desde __init__.py",
-              "description": ""
+              "description": "Los Enums se re-exportan junto con sus modelos desde `app/models/__init__.py` para acceso centralizado."
+            }
+          ]
+        },
+        {
+          "number": "15.3",
+          "title": "Resumen del Stack Completo",
+          "snippets": [
+            {
+              "id": "15-enums-reference-stack-intro",
+              "order": 0,
+              "lang": "text",
+              "code": "",
+              "context": "",
+              "description": "Todo el stack tecnológico del proyecto, desde el servidor hasta la base de datos."
+            },
+            {
+              "id": "15-enums-reference-stack",
+              "order": 1,
+              "lang": "text",
+              "code": "FastAPI             → API REST con tipado y validación automática\nSQLAlchemy 2.0+     → ORM asíncrono con Mapped[] y mapped_column()\nPydantic v2         → Validación de datos con BaseModel\nPydantic Settings   → Variables de entorno tipadas con BaseSettings\nPostgreSQL / SQLite → Motor de BD en prod / tests\nAlembic             → Migraciones del esquema\npytest + httpx      → Tests unitarios y de integración\nJWT + bcrypt        → Autenticación segura\nCloudflare R2 (S3)  → Almacenamiento de archivos\nboto3               → SDK de AWS para S3/R2",
+              "context": "Stack completo",
+              "description": "Combinación de tecnologías para una API asíncrona moderna con FastAPI, SQLAlchemy 2.0 y almacenamiento S3."
             }
           ]
         }
