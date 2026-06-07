@@ -60,7 +60,7 @@ function highlight(code, lang) {
                     <p class="snippet-block__desc">{snippet.description}</p>
                   )}
                   {snippet.code ? (
-                  <TerminalWindow>
+                  <TerminalWindow title={snippet.filename || snippet.context || snippet.lang}>
                     <div class="highlighted-code" set:html={highlight(snippet.code, snippet.lang)} />
                   </TerminalWindow>
                   ) : (
