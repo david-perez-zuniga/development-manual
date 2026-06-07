@@ -2,9 +2,13 @@
 
 > **Objetivo**: Entender cómo se organiza el proyecto en capas, por qué se eligió esta arquitectura y cuáles son las alternativas.
 
+Si vienes de Django, Flask o simplemente Python plano, organizar un proyecto FastAPI puede parecer abierto a interpretación. A diferencia de Django que impone una estructura (apps, models/, views/), FastAPI te deja total libertad — y esa libertad puede llevar al caos si no se establecen reglas desde el inicio. Este tema define la arquitectura que usaremos: una separación por capas pensada para escalar con orden.
+
 ---
 
 ## Tema: ¿Por qué una Arquitectura por Capas?
+
+Separar responsabilidades no es un lujo, es una necesidad cuando el proyecto crece. En Python es fácil caer en la tentación de tener todo en un solo archivo, pero a las 10 rutas ya es insostenible.
 
 ### Subtopic: Problema que resuelve
 
@@ -23,6 +27,8 @@ Cuando una API crece, tener todo el código mezclado (lógica de negocio, acceso
 ---
 
 ## Tema: Tipos de Arquitectura
+
+Antes de decidir cómo organizar el código, conviene conocer las opciones. Cada una tiene un contexto donde brilla y otro donde estorba.
 
 ### Subtopic: MVC (Model-View-Controller)
 
@@ -57,6 +63,8 @@ Es la que usamos en este proyecto. Simple, pragmática y suficiente para APIs CR
 ---
 
 ## Tema: Árbol del Proyecto
+
+Vista general de cómo se organizan los archivos en disco. La estructura refleja directamente la separación por capas: cada carpeta es una capa.
 
 ### Subtopic: Estructura de directorios
 
@@ -112,6 +120,8 @@ backend/
 
 ## Tema: Separación por Capas
 
+Cada capa tiene una responsabilidad única y se comunica con las demás a través de interfaces explícitas (imports). Esto es lo que hace el código mantenible.
+
 ### Subtopic: Responsabilidades de cada capa
 
 | Capa | Carpeta | Prefijo Archivo | Responsabilidad |
@@ -137,6 +147,8 @@ Cliente → HTTP Request → Router (rt_*) → Schema (validación)
 
 ## Tema: Base Declarative para Modelos
 
+SQLAlchemy 2.0 introdujo una nueva forma de declarar modelos usando `DeclarativeBase` en lugar de la función `declarative_base()`. Es más limpia, tiene mejor inferencia de tipos y se alinea con el estilo moderno de Python.
+
 ### Subtopic: Crear la base de modelos
 
 Todos los modelos SQLAlchemy heredan de una misma clase `Base`. Se define usando `DeclarativeBase` (nueva API de SQLAlchemy 2.0):
@@ -154,6 +166,8 @@ class Base(DeclarativeBase):
 ---
 
 ## Tema: BaseSchema para Pydantic
+
+Pydantic v2 es el motor de validación de FastAPI. Tener un `BaseSchema` propio permite centralizar configuraciones comunes como la lectura de atributos desde objetos SQLAlchemy.
 
 ### Subtopic: Schema base para todas las entidades
 
