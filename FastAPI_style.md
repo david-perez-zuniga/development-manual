@@ -1,4 +1,4 @@
-# Backend Skill — Iron Gear Engineering Guide
+# Backend Skill — Iron Gear Engineering Guide.
 
 This skill teaches any AI how to write backend code indistinguishable from the Iron Gear project's style. Every rule is backed by real code extracted from the actual codebase.
 
